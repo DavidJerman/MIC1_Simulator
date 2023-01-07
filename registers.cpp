@@ -7,7 +7,6 @@
 registers::registers() {
     for (unsigned short &i: reg)
         i = 0;
-
 }
 
 word registers::getReg(REGISTER _reg) {

@@ -17,7 +17,7 @@ public:
 class memory_bus_exception : public std::exception {
 public:
     [[nodiscard]] const char *what() const noexcept override {
-        return "Memory bus exception - you probably tried to read while writing or vice versa";
+        return "Memory bus exception - you probably tried to read while writing or vice versa or set the MAR while the memory was busy";
     }
 };
 

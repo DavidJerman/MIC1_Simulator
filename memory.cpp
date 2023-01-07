@@ -66,6 +66,9 @@ void memory::setMbr(word _mbr) {
 }
 
 void memory::setMar(word _mar) {
+    if (io_state == IO_STATE::BUSY) {
+        throw memory_bus_exception();
+    }
     this->mar = _mar;
 }
 

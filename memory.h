@@ -27,7 +27,7 @@ private:
     // Memory is 4K
     word mem[MEM_SIZE]{};
 
-    word mar; // Memory Address Register
+    word mar; // Memory Address Register --> Mar should not be changed while the memory is busy
     word mbr; // Memory Data Register
 
     IO_STATE io_state = IO_STATE::READY; // 0 = not busy, 1 = busy, 2 = ready to read/write
