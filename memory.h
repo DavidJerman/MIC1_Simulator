@@ -5,8 +5,6 @@
 #ifndef HOMICSIM_MEMORY_H
 #define HOMICSIM_MEMORY_H
 
-#include <cstring>
-
 #include "constants.h"
 #include "exceptions.h"
 
