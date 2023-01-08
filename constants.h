@@ -39,4 +39,39 @@ enum REGISTER {
     F
 };
 
+// Instruction flags enums
+
+enum AMUX {
+    A_LATCH,
+    MBR
+};
+
+enum COND {
+    NO_JUMP,
+    N_JUMP,
+    Z_JUMP,
+    JUMP
+};
+
+enum ALU {
+    A_PLUS_B,
+    A_AND_B,
+    POS_A,
+    NEG_A
+};
+
+enum SH {
+    NO_SHIFT,
+    RIGHT_SHIFT,
+    LEFT_SHIFT,
+    INVALLID
+};
+
+// On/off flags
+
+enum ACTIVATE {
+    NO,
+    YES
+};
+
 #endif //HOMICSIM_CONSTANTS_H

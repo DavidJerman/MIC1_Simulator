@@ -12,3 +12,7 @@ registers::registers() {
 word registers::getReg(REGISTER _reg) {
     return this->reg[_reg];
 }
+
+void registers::setReg(REGISTER _reg, word value) {
+    this->reg[_reg] = value;
+}

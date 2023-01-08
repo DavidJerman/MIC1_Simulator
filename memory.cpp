@@ -71,5 +71,3 @@ void memory::setMar(word _mar) {
     }
     this->mar = _mar;
 }
-
-

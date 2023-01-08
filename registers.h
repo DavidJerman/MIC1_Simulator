@@ -13,10 +13,10 @@ public:
 
     word getReg(REGISTER _reg);
 
+    void setReg(REGISTER _reg, word value);
+
 private:
     word reg[REG_SIZE]{};
 };
-
-
 
 #endif //HOMICSIM_REGISTERS_H
