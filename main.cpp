@@ -6,5 +6,6 @@ int main() {
     std::cout << "MIC-1 Simulator" << std::endl;
     simulator sim = simulator();
     sim.test_memory();
+    sim.test_registers();
     return 0;
 }

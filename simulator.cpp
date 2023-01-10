@@ -51,12 +51,29 @@ void simulator::test_memory() {
     }
 }
 
+void simulator::test_registers() {
+    std::cout << "===> Testing registers <===" << std::endl;
+    // Read/write from registers
+    for (unsigned int i = 0; i < NO_REGISTERS; i++) {
+        auto value = (word) 0x1234 + i;
+        reg.setReg(static_cast<REGISTER>(i), value);
+        auto retValue = reg.getReg(static_cast<REGISTER>(i));
+        std::cout << "Register " << i << ": " << getHexStr(value) << " == " << getHexStr(retValue) << " -> " << (value == retValue ? "TRUE" : "FALSE") << std::endl;
+    }
+}
+
+void simulator::test_alu() {
+    std::cout << "===> Testing ALU <===" << std::endl;
+    // Test ALU
+    // TODO
+}
+
 void simulator::printHex(word value) {
     std::cout << getHexStr(value) << std::endl;
 }
 
 std::string simulator::getHexStr(word value) {
     std::stringstream ss;
-    ss << "0x" << std::hex << value;
+    ss << "0x" << std::uppercase << std::hex << value;
     return ss.str();
 }

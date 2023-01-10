@@ -11,6 +11,7 @@
 
 #include "memory.h"
 #include "registers.h"
+#include "alu.h"
 
 class simulator {
 public:
@@ -18,8 +19,12 @@ public:
 
     void next();
 
-    // For testing purposes
+    // Testing
     void test_memory();
+
+    void test_registers();
+
+    void test_alu();
 
 private:
     static void printHex(word value);
@@ -28,6 +33,7 @@ private:
 
     memory mem;
     registers reg;
+    alu alu;
 };
 
 

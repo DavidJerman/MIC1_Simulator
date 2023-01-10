@@ -9,6 +9,7 @@ typedef unsigned short word;
 
 #define MEM_SIZE 4096
 #define REG_SIZE 16
+#define NO_REGISTERS 16
 
 enum class IO_MODE {
     READ,
