@@ -7,5 +7,6 @@ int main() {
     simulator sim = simulator();
     sim.test_memory();
     sim.test_registers();
+    sim.test_alu();
     return 0;
 }

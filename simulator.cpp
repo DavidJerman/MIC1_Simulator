@@ -5,8 +5,8 @@
 #include "simulator.h"
 
 simulator::simulator() {
-    mem = memory();
-    reg = registers();
+    _memory = memory();
+    _registers = registers();
 }
 
 void simulator::next() {
@@ -17,35 +17,35 @@ void simulator::next() {
 void simulator::test_memory() {
     std::cout << "===> Testing memory <===" << std::endl;
     // Read/write from memory
-    mem.setMar(0); mem.setMbr(0x1234); mem.write();
-    mem.write();
-    mem.setMar(0); mem.read();
-    mem.read();
-    auto mbr = mem.getMbr();
+    _memory.setMar(0); _memory.setMbr(0x1234); _memory.write();
+    _memory.write();
+    _memory.setMar(0); _memory.read();
+    _memory.read();
+    auto mbr = _memory.getMbr();
     std::cout << "mbr = " << getHexStr(mbr) << std::endl;
     // Another test_memory
-    mem.setMar(1); mem.read();
-    mem.read();
-    mbr = mem.getMbr();
+    _memory.setMar(1); _memory.read();
+    _memory.read();
+    mbr = _memory.getMbr();
     std::cout << "mbr = " << getHexStr(mbr) << std::endl;
     // Error test_memory 1
     try {
-        mem.setMar(0x1000); mem.read();
-        mem.read();
+        _memory.setMar(0x1000); _memory.read();
+        _memory.read();
     } catch (memory_out_of_bounds_exception &e) {
         std::cout << "Caught memory_out_of_bounds_exception" << std::endl;
     }
     // Error test_memory 2
     try {
-        mem.setMar(0); mem.setMbr(0x1234); mem.write();
-        mem.setMar(0); mem.setMbr(0x1234); mem.write();
+        _memory.setMar(0); _memory.setMbr(0x1234); _memory.write();
+        _memory.setMar(0); _memory.setMbr(0x1234); _memory.write();
     } catch (memory_bus_exception &e) {
         std::cout << "Caught memory_bus_exception" << std::endl;
     }
     // Error test_memory 3
     try {
-        mem.setMar(0); mem.setMbr(0x1234); mem.write();
-        mem.read();
+        _memory.setMar(0); _memory.setMbr(0x1234); _memory.write();
+        _memory.read();
     } catch (memory_bus_exception &e) {
         std::cout << "Caught memory_bus_exception" << std::endl;
     }
@@ -56,9 +56,10 @@ void simulator::test_registers() {
     // Read/write from registers
     for (unsigned int i = 0; i < NO_REGISTERS; i++) {
         auto value = (word) 0x1234 + i;
-        reg.setReg(static_cast<REGISTER>(i), value);
-        auto retValue = reg.getReg(static_cast<REGISTER>(i));
-        std::cout << "Register " << i << ": " << getHexStr(value) << " == " << getHexStr(retValue) << " -> " << (value == retValue ? "TRUE" : "FALSE") << std::endl;
+        _registers.setReg(static_cast<REGISTER>(i), value);
+        auto retValue = _registers.getReg(static_cast<REGISTER>(i));
+        std::cout << "Register " << i << ": " << getHexStr(value) << " == " << getHexStr(retValue) << " -> "
+        << (value == retValue ? "PASS" : "FAIL") << std::endl;
     }
 }
 
@@ -66,6 +67,37 @@ void simulator::test_alu() {
     std::cout << "===> Testing ALU <===" << std::endl;
     // Test ALU
     // TODO
+    // Add
+    word a = (word) 0b1100100010011011;
+    word b = (word) 0b1010100010011011;
+    word opSum = _alu.addOp(a, b);
+    word opCompSum = a + b;
+    std::cout << "Add: " << getHexStr(a) << " + " << getHexStr(b) << " = " << getHexStr(opCompSum) << " == "
+    << getHexStr(opSum) << " -> " << (opSum == opCompSum ? "PASS" : "FAIL") << std::endl;
+    // And
+    word opAnd = _alu.andOp(a, b);
+    word opCompAnd = a & b;
+    std::cout << "And: " << getHexStr(a) << " & " << getHexStr(b) << " = " << getHexStr(opCompAnd) << " == "
+    << getHexStr(opAnd) << " -> " << (opAnd == opCompAnd ? "PASS" : "FAIL") << std::endl;
+    // A
+    word posOp = _alu.posOp(a);
+    std::cout << "Pos: " << getHexStr(a) << " == " << getHexStr(posOp) << " -> " << (posOp == a ? "PASS" : "FAIL")
+    << std::endl;
+    // Not A
+    word negOp = _alu.negOp(a);
+    word negComp = ~a;
+    std::cout << "Neg: " << getHexStr(negComp) << " == " << getHexStr(negOp) << " -> " << (negComp == negOp ? "PASS" : "FAIL")
+    << std::endl;
+    // Zero flag
+    _alu.posOp(0);
+    std::cout << "Zero flag -> " << (_alu.getZ() == true ? "PASS" : "FAIL") << std::endl;
+    _alu.posOp(1);
+    std::cout << "Zero flag -> " << (_alu.getZ() == false ? "PASS" : "FAIL") << std::endl;
+    // Negative flag
+    _alu.posOp(0);
+    std::cout << "Negative flag -> " << (_alu.getN() == false ? "PASS" : "FAIL") << std::endl;
+    _alu.posOp(-1);
+    std::cout << "Negative flag -> " << (_alu.getN() == true ? "PASS" : "FAIL") << std::endl;
 }
 
 void simulator::printHex(word value) {

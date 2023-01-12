@@ -31,9 +31,9 @@ private:
 
     static std::string getHexStr(word value);
 
-    memory mem;
-    registers reg;
-    alu alu;
+    memory _memory;
+    registers _registers;
+    alu _alu;
 };
 
 
