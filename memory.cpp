@@ -71,3 +71,12 @@ void memory::setMar(word _mar) {
     }
     this->mar = _mar;
 }
+
+void memory::reset() {
+    for (word &i: mem)
+        i = 0;
+    mar = 0;
+    mbr = 0;
+    io_state = IO_STATE::READY;
+    io_mode = IO_MODE::READ;
+}

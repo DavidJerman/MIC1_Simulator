@@ -16,3 +16,8 @@ word registers::getReg(REGISTER _reg) {
 void registers::setReg(REGISTER _reg, word value) {
     this->reg[_reg] = value;
 }
+
+void registers::reset() {
+    for (unsigned short &i: reg)
+        i = 0;
+}

@@ -5,7 +5,9 @@
 #ifndef HOMICSIM_CONSTANTS_H
 #define HOMICSIM_CONSTANTS_H
 
+typedef unsigned char byte;
 typedef unsigned short word;
+typedef unsigned int dword;
 
 #define MEM_SIZE 4096
 #define REG_SIZE 16

@@ -19,7 +19,15 @@ public:
 
     void next();
 
+    void run();
+
+    void reset();
+
+    void parse(const std::string& input);
+
     // Testing
+    void run_tests();
+
     void test_memory();
 
     void test_registers();

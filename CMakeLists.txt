@@ -18,6 +18,6 @@ set(CPP_HEADER_FILES
         memory.h
         registers.h
         simulator.h
-        )
+        instruction.cpp instruction.h)
 
 add_executable(HOMicSim ${CPP_SOURCE_FILES} ${CPP_HEADER_FILES})

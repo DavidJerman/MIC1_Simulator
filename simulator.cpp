@@ -90,14 +90,14 @@ void simulator::test_alu() {
     << std::endl;
     // Zero flag
     _alu.posOp(0);
-    std::cout << "Zero flag -> " << (_alu.getZ() == true ? "PASS" : "FAIL") << std::endl;
+    std::cout << "Zero flag -> " << (_alu.getZ() ? "PASS" : "FAIL") << std::endl;
     _alu.posOp(1);
-    std::cout << "Zero flag -> " << (_alu.getZ() == false ? "PASS" : "FAIL") << std::endl;
+    std::cout << "Zero flag -> " << (!_alu.getZ() ? "PASS" : "FAIL") << std::endl;
     // Negative flag
     _alu.posOp(0);
-    std::cout << "Negative flag -> " << (_alu.getN() == false ? "PASS" : "FAIL") << std::endl;
+    std::cout << "Negative flag -> " << (!_alu.getN() ? "PASS" : "FAIL") << std::endl;
     _alu.posOp(-1);
-    std::cout << "Negative flag -> " << (_alu.getN() == true ? "PASS" : "FAIL") << std::endl;
+    std::cout << "Negative flag -> " << (_alu.getN() ? "PASS" : "FAIL") << std::endl;
 }
 
 void simulator::printHex(word value) {
@@ -108,4 +108,23 @@ std::string simulator::getHexStr(word value) {
     std::stringstream ss;
     ss << "0x" << std::uppercase << std::hex << value;
     return ss.str();
+}
+
+void simulator::run() {
+
+}
+
+void simulator::reset() {
+    _memory.reset();
+    _registers.reset();
+}
+
+void simulator::run_tests() {
+    test_memory();
+    test_registers();
+    test_alu();
+}
+
+void simulator::parse(const std::string& input) {
+
 }

@@ -15,6 +15,8 @@ public:
 
     void setReg(REGISTER _reg, word value);
 
+    void reset();
+
 private:
     word reg[REG_SIZE]{};
 };

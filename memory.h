@@ -20,6 +20,8 @@ public:
     void setMbr(word _mbr);
     void setMar(word _mar);
 
+    void reset();
+
 private:
     word read_word(word address);
     void write_word(word address, word value);
