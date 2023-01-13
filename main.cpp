@@ -8,5 +8,9 @@ int main() {
     sim.test_memory();
     sim.test_registers();
     sim.test_alu();
+
+    // Test
+    parser::parse("rd;");
+
     return 0;
 }

@@ -9,7 +9,8 @@ set(CPP_SOURCE_FILES
         memory.cpp
         registers.cpp
         simulator.cpp
-        )
+        instruction.cpp
+        parser.cpp)
 
 set(CPP_HEADER_FILES
         alu.h
@@ -18,6 +19,7 @@ set(CPP_HEADER_FILES
         memory.h
         registers.h
         simulator.h
-        instruction.cpp instruction.h)
+        instruction.h
+        parser.h)
 
 add_executable(HOMicSim ${CPP_SOURCE_FILES} ${CPP_HEADER_FILES})

@@ -9,6 +9,7 @@
 #include <iostream>
 #include <thread>
 
+#include "parser.h"
 #include "memory.h"
 #include "registers.h"
 #include "alu.h"
