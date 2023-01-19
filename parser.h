@@ -19,6 +19,8 @@ public:
 private:
     static bool findCharAfterSpaces(const std::string &s, char c, int offset);
 
+    static bool isNumber(const std::string &s);
+
     std::map<std::string, int> registerTable {};
 };
 

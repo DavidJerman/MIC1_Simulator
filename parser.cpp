@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <algorithm>
 #include "parser.h"
 
 parser::parser() {
@@ -31,7 +32,7 @@ parser::parser() {
 instruction parser::parse(const std::string &input) {
     // Covert to an instruction
     // Bits for checking if the property of an instruction has already been set
-    bool instructionMarker[12]{false};
+    bool instructionMarker[13]{false};
 
     // Control variables
     int seqCount{0};
@@ -53,54 +54,120 @@ instruction parser::parse(const std::string &input) {
     //   8) inv(leftReg)
 
     // Parsing
-    std::stringstream stream(input);
-    std::string next;
+    std::stringstream lineStream(input);
+    std::stringstream instructionStream;
+    std::string nextLine;
+    std::string nextInstruction;
     instruction instruction;
 
-    while (std::getline(stream, next, ' ')) {
+    while (std::getline(lineStream, nextLine, ';')) {
         // Case 2.
-        if (next.substr(0, 2) == "rd")
-        {
-            if (instructionMarker[MARK::MRD] || instructionMarker[MARK::MWR])
+        instructionStream.clear();
+        instructionStream.str(nextLine);
+        while (std::getline(instructionStream, nextInstruction, ' ')) {
+            if (nextLine.substr(0, 2) == "rd")
             {
-                std::cout << "Error: cannot call read again after I/O operation!" << std::endl;
-                instruction.invalidate();
-                break;
+                if (instructionMarker[MARK::MRD] || instructionMarker[MARK::MWR])
+                {
+                    std::cout << "Error: cannot call read again after I/O operation!" << std::endl;
+                    instruction.invalidate();
+                    break;
+                }
+                instructionMarker[MARK::MRD] = true;
+                instruction.setRd(ACTIVATE::YES);
             }
-            instructionMarker[MARK::MRD] = true;
-            instruction.setRd(ACTIVATE::YES);
-            if (!findCharAfterSpaces(next, ';', 2))
+            else if (nextLine.substr(0, 2) == "wr")
             {
-                instruction.invalidate();
-                break;
+                if (instructionMarker[MARK::MRD] || instructionMarker[MARK::MWR])
+                {
+                    std::cout << "Error: cannot call write again after I/O operation!" << std::endl;
+                    instruction.invalidate();
+                    break;
+                }
+                instructionMarker[MARK::MWR] = true;
+                instruction.setWr(ACTIVATE::YES);
             }
-        }
-        else if (next.substr(0, 2) == "wr")
-        {
-            if (instructionMarker[MARK::MRD] || instructionMarker[MARK::MWR])
+            else if (nextLine.substr(0, 5) == "goto")
             {
-                std::cout << "Error: cannot call write again after I/O operation!" << std::endl;
-                instruction.invalidate();
-                break;
+                if (instructionMarker[MARK::MADDR])
+                {
+                    std::cout << "Error: cannot call goto again after goto!" << std::endl;
+                    instruction.invalidate();
+                    break;
+                }
+                instructionMarker[MARK::MADDR] = true;
+                std::getline(lineStream, nextLine, ' ');
+                if (!isNumber(nextLine))
+                {
+                    std::cout << "Error: goto must be followed by a number!" << std::endl;
+                    instruction.invalidate();
+                    break;
+                } else {
+                    instruction.setAddress(std::stoi(nextLine));
+                }
             }
-            instructionMarker[MARK::MWR] = true;
-            instruction.setWr(ACTIVATE::YES);
-            if (!findCharAfterSpaces(next, ';', 2))
+            else if (nextLine.substr(0, 2) == "if")
             {
-                instruction.invalidate();
-                break;
+                if (instructionMarker[MARK::MCOND]) {
+                    std::cout << "Error: cannot call if again after if!" << std::endl;
+                    instruction.invalidate();
+                    break;
+                }
+                instructionMarker[MARK::MCOND] = true;
+                std::getline(lineStream, nextLine, ' ');
+                if (nextLine == "n")
+                {
+                    instruction.setCond(COND::N_JUMP);
+                }
+                else if (nextLine == "z")
+                {
+                    instruction.setCond(COND::Z_JUMP);
+                }
+                else
+                {
+                    std::cout << "Error: invalid condition!" << std::endl;
+                    instruction.invalidate();
+                    break;
+                }
+                std::getline(lineStream, nextLine, ' ');
+                if (nextLine != "then")
+                {
+                    std::cout << "Error: invalid condition!" << std::endl;
+                    instruction.invalidate();
+                    break;
+                }
+                std::getline(lineStream, nextLine, ' ');
+                if (nextLine != "goto")
+                {
+                    std::cout << "Error: invalid condition!" << std::endl;
+                    instruction.invalidate();
+                    break;
+                }
+                std::getline(lineStream, nextLine, ' ');
+                if (!isNumber(nextLine))
+                {
+                    std::cout << "Error: invalid condition!" << std::endl;
+                    instruction.invalidate();
+                    break;
+                } else {
+                    instruction.setAddress(std::stoi(nextLine));
+                }
             }
-        }
-        else if (next.substr(0, 5) == "goto")
-        {
-            if (instructionMarker[MARK::MADDR])
-            {
-                std::cout << "Error: cannot call goto again after goto!" << std::endl;
-                instruction.invalidate();
-                break;
+            else if (nextLine.substr(0, 4) == "band") {
+                // band(leftReg, rightReg)
+                if (instructionMarker[MARK::MALU]) {
+                    std::cout << "Error: cannot call band again after band!" << std::endl;
+                    instruction.invalidate();
+                    break;
+                } else {
+                    std::stringstream bandStream (nextLine);
+                    std::string bandToken;
+                    std::getline(bandStream, bandToken, ','); // TODO: Will this work?
+
+                    instructionMarker[MARK::MALU] = true;
+                    instruction.setAlu(ALU::A_AND_B);
+                }
             }
-            instructionMarker[MARK::MADDR] = true;
-            std::getline(stream, next, ' ');
         }
     }
 
@@ -121,4 +188,9 @@ bool parser::findCharAfterSpaces(const std::string &s, char c, int offset) {
             return false;
     }
     return found;
+}
+
+bool parser::isNumber(const std::string &s) {
+    auto res = std::all_of(s.begin(), s.end(), isdigit);
+    return res;
 }
