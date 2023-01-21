@@ -2,6 +2,7 @@
 // Created by david on 1/7/2023.
 //
 
+#include <cstring>
 #include "memory.h"
 
 memory::memory() {
@@ -73,8 +74,7 @@ void memory::setMar(word _mar) {
 }
 
 void memory::reset() {
-    for (word &i: mem)
-        i = 0;
+    memset(mem, 0, sizeof(mem));
     mar = 0;
     mbr = 0;
     io_state = IO_STATE::READY;

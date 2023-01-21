@@ -24,16 +24,25 @@ namespace PARSE_TEST {
 
     bool test_add(parser &p);
 
-    bool run() {
+    bool test_and(parser &p);
+
+    bool test_not(parser &p);
+
+    bool test_pass(parser &p);
+
+    bool run()
+    {
         // Variables
         bool success = true;
         parser p = parser();
         // Array of test functions
-        bool (*tests[])(parser &p) = {test_rd, test_wr, test_goto, test_if, test_add};
+        bool (*tests[])(parser &p) = {test_rd, test_wr, test_goto, test_if, test_add, test_and, test_not, test_pass};
 
         // Run tests
-        for (const auto &test: tests) {
-            if (!test(p)) {
+        for (const auto &test: tests)
+        {
+            if (!test(p))
+            {
                 invalid_instruction();
                 success = false;
             }
@@ -42,11 +51,13 @@ namespace PARSE_TEST {
         return success;
     }
 
-    void invalid_instruction() {
+    void invalid_instruction()
+    {
         std::cout << "[!] Invalid instruction!" << std::endl;
     }
 
-    bool test_rd(parser &p) {
+    bool test_rd(parser &p)
+    {
         // Read
         std::cout << "  <T> Read" << std::endl;
         std::string input = "rd;";
@@ -60,7 +71,8 @@ namespace PARSE_TEST {
         return true;
     }
 
-    bool test_wr(parser &p) {
+    bool test_wr(parser &p)
+    {
         // Write
         std::cout << "  <T> Write" << std::endl;
         std::string input = "wr;";
@@ -74,7 +86,8 @@ namespace PARSE_TEST {
         return true;
     }
 
-    bool test_goto(parser &p) {
+    bool test_goto(parser &p)
+    {
         // Goto
         std::cout << "  <T> Goto" << std::endl;
         byte address = 99;
@@ -90,7 +103,8 @@ namespace PARSE_TEST {
         return true;
     }
 
-    bool test_if(parser &p) {
+    bool test_if(parser &p)
+    {
         std::cout << "  <T> If" << std::endl;
         // If z
         bool success = true;
@@ -119,7 +133,8 @@ namespace PARSE_TEST {
         return success;
     }
 
-    bool test_add(parser &p) {
+    bool test_add(parser &p)
+    {
         std::cout << "  <T> Add" << std::endl;
         // Add a := a + a;
         bool success = true;
@@ -178,6 +193,119 @@ namespace PARSE_TEST {
         correctCode |= B << BUS_A_SH;
         correctCode |= C << BUS_B_SH;
         correctCode |= A << BUS_C_SH;
+        if (!i.isValid())
+            success = false;
+        if (code != correctCode)
+            success = false;
+        return success;
+    }
+
+    bool test_and(parser &p)
+    {
+        std::cout << "  <T> And" << std::endl;
+        bool success = true;
+        // a := band(a, a);
+        std::string resReg = "a";
+        std::string leftReg = "a";
+        std::string rightReg = "a";
+        std::string input = resReg + " := band(" + leftReg + ", " + rightReg + ");";
+        instruction i = p.parse(input);
+        auto code = i.getCode();
+        dword correctCode = A_AND_B << ALU_SH;
+        correctCode |= A << BUS_A_SH;
+        correctCode |= A << BUS_B_SH;
+        correctCode |= A << BUS_C_SH;
+        if (!i.isValid())
+            success = false;
+        if (code != correctCode)
+            success = false;
+        // c := band(a, b);
+        resReg = "c";
+        leftReg = "a";
+        rightReg = "b";
+        input = resReg + " := band(" + leftReg + ", " + rightReg + ");";
+        i = p.parse(input);
+        code = i.getCode();
+        correctCode = A_AND_B << ALU_SH;
+        correctCode |= A << BUS_A_SH;
+        correctCode |= B << BUS_B_SH;
+        correctCode |= C << BUS_C_SH;
+        if (!i.isValid())
+            success = false;
+        if (code != correctCode)
+            success = false;
+        return success;
+    }
+
+    bool test_not(parser &p)
+    {
+        std::cout << "  <T> Not (inv)" << std::endl;
+        bool success = true;
+        // a := not(a);
+        std::string resReg = "a";
+        std::string reg = "a";
+        std::string input = resReg + " := inv(" + reg + ");";
+        instruction i = p.parse(input);
+        auto code = i.getCode();
+        dword correctCode = NEG_A << ALU_SH;
+        correctCode |= A << BUS_A_SH;
+        correctCode |= A << BUS_C_SH;
+        if (!i.isValid())
+            success = false;
+        if (code != correctCode)
+            success = false;
+        // c := not(a);
+        resReg = "c";
+        reg = "a";
+        input = resReg + " := inv(" + reg + ");";
+        i = p.parse(input);
+        code = i.getCode();
+        correctCode = NEG_A << ALU_SH;
+        correctCode |= A << BUS_A_SH;
+        correctCode |= C << BUS_C_SH;
+        if (!i.isValid())
+            success = false;
+        if (code != correctCode)
+            success = false;
+        return success;
+    }
+
+    bool test_pass(parser &p)
+    {
+        std::cout << "  <T> Pass" << std::endl;
+        bool success = true;
+        // a := a;
+        std::string resReg = "a";
+        std::string reg = "a";
+        std::string input = resReg + " := " + reg + ";";
+        instruction i = p.parse(input);
+        auto code = i.getCode();
+        dword correctCode = A << BUS_A_SH;
+        correctCode |= A << BUS_C_SH;
+        if (!i.isValid())
+            success = false;
+        if (code != correctCode)
+            success = false;
+        // c := a;
+        resReg = "c";
+        reg = "a";
+        input = resReg + " := " + reg + ";";
+        i = p.parse(input);
+        code = i.getCode();
+        correctCode = A << BUS_A_SH;
+        correctCode |= C << BUS_C_SH;
+        if (!i.isValid())
+            success = false;
+        if (code != correctCode)
+            success = false;
+        // c := (-1);
+        resReg = "c";
+        reg = "(-1)";
+        input = resReg + " := " + reg + ";";
+        i = p.parse(input);
+        code = i.getCode();
+        correctCode = N1 << BUS_A_SH;
+        correctCode |= C << BUS_C_SH;
         if (!i.isValid())
             success = false;
         if (code != correctCode)

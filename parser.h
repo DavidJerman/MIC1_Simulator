@@ -23,6 +23,10 @@ private:
 
     REGISTER toRegister(const std::string &s);
 
+    void initRegisterTable();
+
+    bool arithmeticPlus(instruction &instruction, bool instructionMarker[13], const std::string &expression);
+
     std::map<std::string, int> registerTable {};
 };
 
