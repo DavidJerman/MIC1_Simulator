@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.24)
+cmake_minimum_required(VERSION 3.21)
 project(HOMicSim)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -20,6 +20,8 @@ set(CPP_HEADER_FILES
         registers.h
         simulator.h
         instruction.h
-        parser.h)
+        parser.h
+        tests/test_parser.h
+        tests/run_tests.h)
 
 add_executable(HOMicSim ${CPP_SOURCE_FILES} ${CPP_HEADER_FILES})

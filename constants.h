@@ -72,7 +72,8 @@ enum REGISTER {
     F,
     MAR,
     MBR,
-    ALU
+    ALU,
+    INVALID
 };
 
 // Instruction flags enums

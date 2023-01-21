@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <algorithm>
+#include <cstring>
 #include "parser.h"
 
 parser::parser() {
@@ -34,15 +35,6 @@ instruction parser::parse(const std::string &input) {
     // Bits for checking if the property of an instruction has already been set
     bool instructionMarker[13]{false};
 
-    // Control variables
-    int seqCount{0};
-    int resReg{0};
-    int leftReg{0};
-    int rightReg{0};
-    bool band;
-    bool lshift;
-    bool rshift;
-
     // 1.1) resReg := leftReg + rightReg;
     // 1.2) resReg := leftReg;
     //   2) rd; / wr;
@@ -52,20 +44,24 @@ instruction parser::parse(const std::string &input) {
     //   6) lshift(leftReg)
     //   7) rshift(leftReg)
     //   8) inv(leftReg)
+    //   9) resReg := band(leftReg, rightReg);
+    //  10) resReg := lshift(leftReg);
+    //  11) resReg := rshift(leftReg);
+    //  12) resReg := inv(leftReg);
 
     // Parsing
     std::stringstream lineStream(input);
     std::stringstream instructionStream;
     std::string nextLine;
-    std::string nextInstruction;
+    std::string token;
     instruction instruction;
 
     while (std::getline(lineStream, nextLine, ';')) {
         // Case 2.
         instructionStream.clear();
         instructionStream.str(nextLine);
-        while (std::getline(instructionStream, nextInstruction, ' ')) {
-            if (nextLine.substr(0, 2) == "rd")
+        while (std::getline(instructionStream, token, ' ')) {
+            if (token.substr(0, 2) == "rd")
             {
                 if (instructionMarker[MARK::MRD] || instructionMarker[MARK::MWR])
                 {
@@ -75,8 +71,14 @@ instruction parser::parse(const std::string &input) {
                 }
                 instructionMarker[MARK::MRD] = true;
                 instruction.setRd(ACTIVATE::YES);
+                if (!instructionStream.eof())
+                {
+                    std::cout << "Error: invalid instruction!" << std::endl;
+                    instruction.invalidate();
+                    break;
+                }
             }
-            else if (nextLine.substr(0, 2) == "wr")
+            else if (token.substr(0, 2) == "wr")
             {
                 if (instructionMarker[MARK::MRD] || instructionMarker[MARK::MWR])
                 {
@@ -86,8 +88,14 @@ instruction parser::parse(const std::string &input) {
                 }
                 instructionMarker[MARK::MWR] = true;
                 instruction.setWr(ACTIVATE::YES);
+                if (!instructionStream.eof())
+                {
+                    std::cout << "Error: invalid instruction!" << std::endl;
+                    instruction.invalidate();
+                    break;
+                }
             }
-            else if (nextLine.substr(0, 5) == "goto")
+            else if (token.substr(0, 4) == "goto")
             {
                 if (instructionMarker[MARK::MADDR])
                 {
@@ -95,77 +103,177 @@ instruction parser::parse(const std::string &input) {
                     instruction.invalidate();
                     break;
                 }
+                else
+                {
+                    instructionMarker[MARK::MCOND] = true;
+                    instruction.setCond(COND::JUMP);
+                }
                 instructionMarker[MARK::MADDR] = true;
-                std::getline(lineStream, nextLine, ' ');
-                if (!isNumber(nextLine))
+                std::getline(instructionStream, token, ' ');
+                if (!isNumber(token))
                 {
                     std::cout << "Error: goto must be followed by a number!" << std::endl;
                     instruction.invalidate();
                     break;
                 } else {
-                    instruction.setAddress(std::stoi(nextLine));
+                    instruction.setAddress(std::stoi(token));
+                }
+                if (!instructionStream.eof())
+                {
+                    std::cout << "Error: invalid instruction!" << std::endl;
+                    instruction.invalidate();
+                    break;
                 }
             }
-            else if (nextLine.substr(0, 2) == "if")
+            else if (token.substr(0, 2) == "if")
             {
-                if (instructionMarker[MARK::MCOND]) {
+                if (instructionMarker[MARK::MCOND])
+                {
                     std::cout << "Error: cannot call if again after if!" << std::endl;
                     instruction.invalidate();
                     break;
                 }
                 instructionMarker[MARK::MCOND] = true;
-                std::getline(lineStream, nextLine, ' ');
-                if (nextLine == "n")
+                std::getline(instructionStream, token, ' ');
+                if (token == "n")
                 {
                     instruction.setCond(COND::N_JUMP);
                 }
-                else if (nextLine == "z")
+                else if (token == "z")
                 {
                     instruction.setCond(COND::Z_JUMP);
                 }
                 else
                 {
-                    std::cout << "Error: invalid condition!" << std::endl;
+                    std::cout << "Error: invalid/missing jump condition flag in if statement!" << std::endl;
                     instruction.invalidate();
                     break;
                 }
-                std::getline(lineStream, nextLine, ' ');
-                if (nextLine != "then")
+                std::getline(instructionStream, token, ' ');
+                if (token != "then")
                 {
-                    std::cout << "Error: invalid condition!" << std::endl;
+                    std::cout << "Error: invalid/missing then in if statement!" << std::endl;
                     instruction.invalidate();
                     break;
                 }
-                std::getline(lineStream, nextLine, ' ');
-                if (nextLine != "goto")
+                std::getline(instructionStream, token, ' ');
+                if (token != "goto")
                 {
-                    std::cout << "Error: invalid condition!" << std::endl;
+                    std::cout << "Error: invalid/missing goto in if statement!" << std::endl;
                     instruction.invalidate();
                     break;
                 }
-                std::getline(lineStream, nextLine, ' ');
-                if (!isNumber(nextLine))
+                std::getline(instructionStream, token, ' ');
+                if (!isNumber(token))
                 {
-                    std::cout << "Error: invalid condition!" << std::endl;
+                    std::cout << "Error: invalid jump address in if statement!" << std::endl;
                     instruction.invalidate();
                     break;
-                } else {
-                    instruction.setAddress(std::stoi(nextLine));
+                }
+                else
+                {
+                    instruction.setAddress(std::stoi(token));
+                }
+                if (!instructionStream.eof())
+                {
+                    std::cout << "Error: invalid instruction!" << std::endl;
+                    instruction.invalidate();
+                    break;
                 }
             }
-            else if (nextLine.substr(0, 4) == "band") {
+            else if (token.substr(0, 4) == "band")
+            {
                 // band(leftReg, rightReg)
-                if (instructionMarker[MARK::MALU]) {
+                if (instructionMarker[MARK::MALU])
+                {
                     std::cout << "Error: cannot call band again after band!" << std::endl;
                     instruction.invalidate();
                     break;
-                } else {
-                    std::stringstream bandStream (nextLine);
+                }
+                else
+                {
+                    std::stringstream bandStream (token);
                     std::string bandToken;
                     std::getline(bandStream, bandToken, ','); // TODO: Will this work?
-
                     instructionMarker[MARK::MALU] = true;
                     instruction.setAlu(ALU::A_AND_B);
+                }
+                if (!instructionStream.eof())
+                {
+                    std::cout << "Error: invalid instruction!" << std::endl;
+                    instruction.invalidate();
+                    break;
+                }
+            }
+            else
+            {
+                // a := b + c;
+                auto resReg = toRegister(token);
+                if (resReg == INVALID)
+                {
+                    std::cout << "Error: invalid register!" << std::endl;
+                    instruction.invalidate();
+                    break;
+                }
+                if (instructionMarker[MARK::MC])
+                {
+                    std::cout << "Error: cannot assign value to register again!" << std::endl;
+                    instruction.invalidate();
+                    break;
+                }
+                else
+                {
+                    instructionMarker[MARK::MC] = true;
+                    instruction.setBusC(resReg);
+                }
+                std::getline(instructionStream, token, ' ');
+                if (token != ":=")
+                {
+                    std::cout << "Error: invalid assignment operator!" << std::endl;
+                    instruction.invalidate();
+                    break;
+                }
+                std::getline(instructionStream, token, ' ');
+                // TODO: Mar and mbr and such should be checked here!
+                auto leftReg = toRegister(token);
+                if (leftReg == INVALID)
+                {
+                    std::cout << "Error: invalid register!" << std::endl;
+                    instruction.invalidate();
+                    break;
+                }
+                else
+                {
+                    instruction.setBusA(leftReg);
+                }
+                std::getline(instructionStream, token, ' ');
+                if (token == "+")
+                {
+                    instruction.setAlu(ALU::A_PLUS_B);
+                }
+                else
+                {
+                    std::cout << "Error: invalid ALU operation!" << std::endl;
+                    instruction.invalidate();
+                    break;
+                }
+                std::getline(instructionStream, token, ' ');
+                auto rightReg = toRegister(token);
+                if (rightReg == INVALID)
+                {
+                    std::cout << "Error: invalid register!" << std::endl;
+                    instruction.invalidate();
+                    break;
+                }
+                else
+                {
+                    instruction.setBusB(rightReg);
+                }
+                if (!instructionStream.eof())
+                {
+                    std::cout << "Error: invalid instruction!" << std::endl;
+                    instruction.invalidate();
+                    break;
                 }
             }
         }
@@ -193,4 +301,11 @@ bool parser::findCharAfterSpaces(const std::string &s, char c, int offset) {
 bool parser::isNumber(const std::string &s) {
     auto res = std::all_of(s.begin(), s.end(), isdigit);
     return res;
+}
+
+REGISTER parser::toRegister(const std::string &s) {
+    auto reg = registerTable.find(s);
+    if (reg != registerTable.end())
+        return (REGISTER)reg->second;
+    return INVALID;
 }
