@@ -37,6 +37,8 @@ instruction parser::parse(const std::string &input) {
     std::string token;
     instruction instruction;
 
+    // TODO: MBR has to also set ALU
+
     while (std::getline(lineStream, nextLine, ';')) {
         nextLine = trim(nextLine);
         // Case 2.
@@ -156,6 +158,7 @@ instruction parser::parse(const std::string &input) {
                 else
                 {
                     instruction.setAddress(std::stoi(token));
+                    instructionMarker[MARK::MADDR] = true;
                 }
                 if (!instructionStream.eof())
                 {
@@ -168,23 +171,32 @@ instruction parser::parse(const std::string &input) {
             {
                 // a := b + c;
                 auto resReg = toRegister(token);
+
                 if (resReg == INVALID)
                 {
                     std::cout << "Error: invalid register!" << std::endl;
                     instruction.invalidate();
                     break;
                 }
-                if (instructionMarker[MARK::MC])
+
+                if (instructionMarker[MARK::MC] || instructionMarker[MARK::MENC])
                 {
                     std::cout << "Error: cannot assign value to register again!" << std::endl;
                     instruction.invalidate();
                     break;
                 }
+                else if ((REGISTER)resReg == MBR)
+                {
+                    instructionMarker[MARK::MMBR] = true;
+                    instruction.setMbr(ACTIVATE::YES);
+                }
                 else
                 {
                     instructionMarker[MARK::MC] = true;
+                    instructionMarker[MARK::MENC] = true;
                     instruction.setBusC(resReg);
                 }
+
                 std::getline(instructionStream, token, ' ');
                 if (token != ":=")
                 {
@@ -192,13 +204,21 @@ instruction parser::parse(const std::string &input) {
                     instruction.invalidate();
                     break;
                 }
+
                 std::getline(instructionStream, token, ' ');
                 // TODO: Mar and mbr and such should be checked here!
                 // Option 1: register
                 // Option 2: band, inv, rshift, lshift
                 if (!strcmp(token.substr(0, 6).c_str(), "rshift"))
                 {
+                    if (instructionMarker[MARK::MSH])
+                    {
+                        std::cout << "Error: cannot call shift again after shift!" << std::endl;
+                        instruction.invalidate();
+                        break;
+                    }
                     instruction.setSh(SH::RIGHT_SHIFT);
+                    instructionMarker[MARK::MSH] = true;
                     std::string expression = token.substr(7, token.length() - 7);
                     while (std::getline(instructionStream, token, ' '))
                     {
@@ -214,7 +234,14 @@ instruction parser::parse(const std::string &input) {
                 }
                 else if (!strcmp(token.substr(0, 6).c_str(), "lshift"))
                 {
+                    if (instructionMarker[MARK::MSH])
+                    {
+                        std::cout << "Error: cannot call shift again after shift!" << std::endl;
+                        instruction.invalidate();
+                        break;
+                    }
                     instruction.setSh(SH::LEFT_SHIFT);
+                    instructionMarker[MARK::MSH] = true;
                     std::string expression = token.substr(7, token.length() - 7);
                     while (std::getline(instructionStream, token, ' '))
                     {
@@ -245,6 +272,9 @@ instruction parser::parse(const std::string &input) {
             }
         }
     }
+
+    // Idea: process mar and mbr assignments separately
+
     return instruction;
 }
 
@@ -305,6 +335,19 @@ bool parser::arithmetic(instruction &instruction, bool *instructionMarker, const
     std::string token;
     std::getline(instructionStream, token, ' ');
 
+//    if (instructionMarker[MARK::MALU])
+//    {
+//        std::cout << "Error: cannot call arithmetic again after arithmetic!" << std::endl;
+//        return false;
+//    }
+//    instructionMarker[MARK::MALU] = true;
+//    if (instructionMarker[MARK::MA] || instructionMarker[MARK::MB])
+//    {
+//        std::cout << "Error: cannot call arithmetic again!" << std::endl;
+//        return false;
+//    }
+//    instructionMarker[MARK::MA] = true;
+
     if (!strcmp(token.substr(0, 3).c_str(), "inv"))
     {
         instruction.setAlu(ALU::NEG_A);
@@ -321,7 +364,7 @@ bool parser::arithmetic(instruction &instruction, bool *instructionMarker, const
             instruction.invalidate();
             return false;
         }
-        instruction.setBusA(reg);
+        setA(instruction, instructionMarker, reg);
         if (!instructionStream.eof())
         {
             std::cout << "Error: invalid instruction!" << std::endl;
@@ -345,7 +388,7 @@ bool parser::arithmetic(instruction &instruction, bool *instructionMarker, const
             instruction.invalidate();
             return false;
         }
-        instruction.setBusA(regLeft);
+        setA(instruction, instructionMarker, regLeft);
         std::getline(instructionStream, token, ' ');
         auto regRight = toRegister(token.substr(0, token.length() - 1));
         if (regRight == INVALID)
@@ -354,7 +397,7 @@ bool parser::arithmetic(instruction &instruction, bool *instructionMarker, const
             instruction.invalidate();
             return false;
         }
-        instruction.setBusB(regRight);
+        setB(instruction, instructionMarker, regRight);
         if (!instructionStream.eof())
         {
             std::cout << "Error (band): invalid instruction!" << std::endl;
@@ -391,7 +434,11 @@ bool parser::arithmeticPlus(instruction &instruction, bool *instructionMarker, c
     }
     else
     {
-        instruction.setBusA(leftReg);
+        auto res = setA(instruction, instructionMarker, leftReg);
+        if (!res)
+        {
+            return false;
+        }
     }
     // End if there is no additional operation
     if (expressionStream.eof())
@@ -421,7 +468,11 @@ bool parser::arithmeticPlus(instruction &instruction, bool *instructionMarker, c
     }
     else
     {
-        instruction.setBusB(rightReg);
+        auto res = setB(instruction, instructionMarker, rightReg);
+        if (!res)
+        {
+            return false;
+        }
     }
     if (!expressionStream.eof())
     {
@@ -429,5 +480,27 @@ bool parser::arithmeticPlus(instruction &instruction, bool *instructionMarker, c
         instruction.invalidate();
         return false;
     }
+    return true;
+}
+
+bool parser::setA(instruction &instruction, bool *instructionMarker, const REGISTER &reg) {
+    if (instructionMarker[MARK::MA] && instruction.getBusA() != reg)
+    {
+        std::cout << "Error: cannot call setA again with different register!" << std::endl;
+        return false;
+    }
+    instructionMarker[MARK::MA] = true;
+    instruction.setBusA(reg);
+    return true;
+}
+
+bool parser::setB(instruction &instruction, bool *instructionMarker, const REGISTER &reg) {
+    if (instructionMarker[MARK::MB] && instruction.getBusB() != reg)
+    {
+        std::cout << "Error: cannot call setB again with different register!" << std::endl;
+        return false;
+    }
+    instructionMarker[MARK::MB] = true;
+    instruction.setBusB(reg);
     return true;
 }

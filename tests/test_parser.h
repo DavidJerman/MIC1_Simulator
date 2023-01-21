@@ -36,13 +36,26 @@ namespace PARSE_TEST {
 
     bool complex_test(parser &p);
 
+    bool test_mbr(parser &p);
+
     bool run()
     {
         // Variables
         bool success = true;
         parser p = parser();
         // Array of test functions
-        bool (*tests[])(parser &p) = {test_rd, test_wr, test_goto, test_if, test_add, test_and, test_not, test_pass, test_shift, test_advanced, complex_test};
+        bool (*tests[])(parser &p) = {test_rd,
+                                      test_wr,
+                                      test_goto,
+                                      test_if,
+                                      test_add,
+                                      test_and,
+                                      test_not,
+                                      test_pass,
+                                      test_shift,
+                                      test_advanced,
+                                      complex_test,
+                                      test_mbr};
 
         // Run tests
         for (const auto &test: tests)
@@ -452,6 +465,34 @@ namespace PARSE_TEST {
         if (!i.isValid())
             success = false;
         if (code != correctCode)
+            success = false;
+        return success;
+    }
+
+    bool test_mbr(parser &p)
+    {
+        std::cout << "  <T> MBR" << std::endl;
+        bool success = true;
+        // mbr := a; c := d;   --> should be invalid
+        std::string resReg = "mbr";
+        std::string reg = "a";
+        std::string input = resReg + " := " + reg + "; c := d;";
+        instruction i = p.parse(input);
+        if (i.isValid())
+            success = false;
+        // mbr := a;   --> should be valid
+        resReg = "mbr";
+        reg = "a";
+        input = resReg + " := " + reg + ";";
+        i = p.parse(input);
+        if (!i.isValid())
+            success = false;
+        // mbr := a; c := a;   --> should be valid
+        resReg = "mbr";
+        reg = "a";
+        input = resReg + " := " + reg + "; c := a;";
+        i = p.parse(input);
+        if (!i.isValid())
             success = false;
         return success;
     }

@@ -44,6 +44,10 @@ private:
         return {start, end + 1};
     }
 
+    static bool setA(instruction &instruction, bool instructionMarker[13], const REGISTER &reg);
+
+    static bool setB(instruction &instruction, bool instructionMarker[13], const REGISTER &reg);
+
     std::map<std::string, int> registerTable {};
 };
 

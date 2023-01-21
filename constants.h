@@ -101,7 +101,7 @@ enum SH {
     NO_SHIFT,
     RIGHT_SHIFT,
     LEFT_SHIFT,
-    INVALLID
+    INVALID_SHIFT
 };
 
 // On/off flags
