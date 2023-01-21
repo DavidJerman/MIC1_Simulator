@@ -38,10 +38,12 @@ instruction parser::parse(const std::string &input) {
     instruction instruction;
 
     while (std::getline(lineStream, nextLine, ';')) {
+        nextLine = trim(nextLine);
         // Case 2.
         instructionStream.clear();
         instructionStream.str(nextLine);
         while (std::getline(instructionStream, token, ' ')) {
+            token = trim(token);
             if (token.substr(0, 2) == "rd")
             {
                 if (instructionMarker[MARK::MRD] || instructionMarker[MARK::MWR])

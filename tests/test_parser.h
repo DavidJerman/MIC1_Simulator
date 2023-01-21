@@ -34,14 +34,15 @@ namespace PARSE_TEST {
 
     bool test_advanced(parser &p);
 
+    bool complex_test(parser &p);
+
     bool run()
     {
         // Variables
         bool success = true;
         parser p = parser();
         // Array of test functions
-        test_advanced(p);
-        bool (*tests[])(parser &p) = {test_rd, test_wr, test_goto, test_if, test_add, test_and, test_not, test_pass, test_shift, test_advanced};
+        bool (*tests[])(parser &p) = {test_rd, test_wr, test_goto, test_if, test_add, test_and, test_not, test_pass, test_shift, test_advanced, complex_test};
 
         // Run tests
         for (const auto &test: tests)
@@ -403,6 +404,51 @@ namespace PARSE_TEST {
         correctCode |= N1 << BUS_B_SH;
         correctCode |= C << BUS_C_SH;
         correctCode |= RIGHT_SHIFT << SH_SH;
+        if (!i.isValid())
+            success = false;
+        if (code != correctCode)
+            success = false;
+        return success;
+    }
+
+    bool complex_test(parser &p)
+    {
+        std::cout << "  <T> Complex" << std::endl;
+        bool success = true;
+        // ac := lshift(a + b); if z then goto 22; rd;
+        std::string resReg = "ac";
+        std::string regLeft = "a";
+        std::string regRight = "b";
+        byte address = 22;
+        std::string input = resReg + " := lshift(" + regLeft + " + " + regRight + "); if z then goto " + std::to_string(address) + "; rd;";
+        instruction i = p.parse(input);
+        auto code = i.getCode();
+        dword correctCode = A_PLUS_B << ALU_SH;
+        correctCode |= A << BUS_A_SH;
+        correctCode |= B << BUS_B_SH;
+        correctCode |= AC << BUS_C_SH;
+        correctCode |= LEFT_SHIFT << SH_SH;
+        correctCode |= Z_JUMP << COND_SH;
+        correctCode |= address << ADDRESS_SH;
+        correctCode |= YES << RD_SH;
+        if (!i.isValid())
+            success = false;
+        if (code != correctCode)
+            success = false;
+        // ac := rshift(inv(a)); if n then goto 22; wr;
+        resReg = "ac";
+        regLeft = "a";
+        address = 22;
+        input = resReg + " := rshift(inv(" + regLeft + ")); if n then goto " + std::to_string(address) + "; wr;";
+        i = p.parse(input);
+        code = i.getCode();
+        correctCode = NEG_A << ALU_SH;
+        correctCode |= A << BUS_A_SH;
+        correctCode |= AC << BUS_C_SH;
+        correctCode |= RIGHT_SHIFT << SH_SH;
+        correctCode |= N_JUMP << COND_SH;
+        correctCode |= address << ADDRESS_SH;
+        correctCode |= YES << WR_SH;
         if (!i.isValid())
             success = false;
         if (code != correctCode)
