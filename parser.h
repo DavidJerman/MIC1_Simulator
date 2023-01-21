@@ -25,6 +25,8 @@ private:
 
     void initRegisterTable();
 
+    bool arithmetic(instruction &instruction, bool instructionMarker[13], const std::string &expression);
+
     bool arithmeticPlus(instruction &instruction, bool instructionMarker[13], const std::string &expression);
 
     std::map<std::string, int> registerTable {};

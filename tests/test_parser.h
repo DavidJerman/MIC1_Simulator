@@ -30,13 +30,18 @@ namespace PARSE_TEST {
 
     bool test_pass(parser &p);
 
+    bool test_shift(parser &p);
+
+    bool test_advanced(parser &p);
+
     bool run()
     {
         // Variables
         bool success = true;
         parser p = parser();
         // Array of test functions
-        bool (*tests[])(parser &p) = {test_rd, test_wr, test_goto, test_if, test_add, test_and, test_not, test_pass};
+        test_advanced(p);
+        bool (*tests[])(parser &p) = {test_rd, test_wr, test_goto, test_if, test_add, test_and, test_not, test_pass, test_shift, test_advanced};
 
         // Run tests
         for (const auto &test: tests)
@@ -280,7 +285,8 @@ namespace PARSE_TEST {
         std::string input = resReg + " := " + reg + ";";
         instruction i = p.parse(input);
         auto code = i.getCode();
-        dword correctCode = A << BUS_A_SH;
+        dword correctCode = POS_A << ALU_SH;
+        correctCode |= A << BUS_A_SH;
         correctCode |= A << BUS_C_SH;
         if (!i.isValid())
             success = false;
@@ -292,7 +298,8 @@ namespace PARSE_TEST {
         input = resReg + " := " + reg + ";";
         i = p.parse(input);
         code = i.getCode();
-        correctCode = A << BUS_A_SH;
+        correctCode = POS_A << ALU_SH;
+        correctCode |= A << BUS_A_SH;
         correctCode |= C << BUS_C_SH;
         if (!i.isValid())
             success = false;
@@ -304,8 +311,98 @@ namespace PARSE_TEST {
         input = resReg + " := " + reg + ";";
         i = p.parse(input);
         code = i.getCode();
-        correctCode = N1 << BUS_A_SH;
+        correctCode = POS_A << ALU_SH;
+        correctCode |= N1 << BUS_A_SH;
         correctCode |= C << BUS_C_SH;
+        if (!i.isValid())
+            success = false;
+        if (code != correctCode)
+            success = false;
+        return success;
+    }
+
+    bool test_shift(parser &p)
+    {
+        std::cout << "  <T> Shift" << std::endl;
+        // a := lshift(a);
+        std::string resReg = "a";
+        std::string reg = "a";
+        std::string input = resReg + " := lshift(" + reg + ");";
+        instruction i = p.parse(input);
+        auto code = i.getCode();
+        dword correctCode = POS_A << ALU_SH;
+        correctCode |= A << BUS_A_SH;
+        correctCode |= A << BUS_C_SH;
+        correctCode |= LEFT_SHIFT << SH_SH;
+        if (!i.isValid())
+            return false;
+        if (code != correctCode)
+            return false;
+        // c := rshift(b);
+        resReg = "c";
+        reg = "b";
+        input = resReg + " := rshift(" + reg + ");";
+        i = p.parse(input);
+        code = i.getCode();
+        correctCode = POS_A << ALU_SH;
+        correctCode |= B << BUS_A_SH;
+        correctCode |= C << BUS_C_SH;
+        correctCode |= RIGHT_SHIFT << SH_SH;
+        if (!i.isValid())
+            return false;
+        if (code != correctCode)
+            return false;
+        return true;
+    }
+
+    bool test_advanced(parser &p)
+    {
+        std::cout << "  <T> Advanced" << std::endl;
+        bool success = true;
+        // a := lshift(a + b);
+        std::string resReg = "a";
+        std::string regLeft = "a";
+        std::string regRight = "b";
+        std::string input = resReg + " := lshift(" + regLeft + " + " + regRight + ");";
+        instruction i = p.parse(input);
+        auto code = i.getCode();
+        dword correctCode = A_PLUS_B << ALU_SH;
+        correctCode |= A << BUS_A_SH;
+        correctCode |= B << BUS_B_SH;
+        correctCode |= A << BUS_C_SH;
+        correctCode |= LEFT_SHIFT << SH_SH;
+        if (!i.isValid())
+            success = false;
+        if (code != correctCode)
+            success = false;
+        // c := rshift(a + b);
+        resReg = "c";
+        regLeft = "a";
+        regRight = "b";
+        input = resReg + " := rshift(" + regLeft + " + " + regRight + ");";
+        i = p.parse(input);
+        code = i.getCode();
+        correctCode = A_PLUS_B << ALU_SH;
+        correctCode |= A << BUS_A_SH;
+        correctCode |= B << BUS_B_SH;
+        correctCode |= C << BUS_C_SH;
+        correctCode |= RIGHT_SHIFT << SH_SH;
+        if (!i.isValid())
+            success = false;
+        if (code != correctCode)
+            success = false;
+        // c := rshift(band(a, (-1)));
+        resReg = "c";
+        regLeft = "a";
+        regRight = "(-1)";
+        input = resReg + " := rshift(band(" + regLeft + ", " + regRight + "));";
+        i = p.parse(input);
+        code = i.getCode();
+        correctCode = A_AND_B << ALU_SH;
+        correctCode |= A << BUS_A_SH;
+        correctCode |= N1 << BUS_B_SH;
+        correctCode |= C << BUS_C_SH;
+        correctCode |= RIGHT_SHIFT << SH_SH;
         if (!i.isValid())
             success = false;
         if (code != correctCode)

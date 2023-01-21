@@ -21,10 +21,10 @@ instruction parser::parse(const std::string &input) {
     //   2) rd; / wr;
     //   3) goto 99;
     //   4) if n then goto 15;
-    //   5) band(leftReg, rightReg)
-    //   6) lshift(leftReg)
-    //   7) rshift(leftReg)
-    //   8) inv(leftReg)
+    //   5) band(leftReg, rightReg)   ---> alu := band(leftReg, rightReg)
+    //   6) lshift(leftReg)    ---> alu := lshift(leftReg)
+    //   7) rshift(leftReg)    ---> alu := rshift(leftReg)
+    //   8) inv(leftReg)    ---> alu := inv(leftReg)
     //   9) resReg := band(leftReg, rightReg);
     //  10) resReg := lshift(leftReg);
     //  11) resReg := rshift(leftReg);
@@ -194,81 +194,51 @@ instruction parser::parse(const std::string &input) {
                 // TODO: Mar and mbr and such should be checked here!
                 // Option 1: register
                 // Option 2: band, inv, rshift, lshift
-                if (!strcmp(token.substr(0, 3).c_str(), "inv"))
-                {
-                    instruction.setAlu(ALU::NEG_A);
-                    if (token.length() < 5 || token.substr(token.length() - 1, 1) != ")")
-                    {
-                        std::cout << "Error: invalid inv instruction! Please avoid any unnecessary spaces in band!" << std::endl;
-                        instruction.invalidate();
-                        break;
-                    }
-                    auto reg = toRegister(token.substr(4, token.length() - 5));
-                    if (reg == INVALID)
-                    {
-                        std::cout << "Error: invalid register!" << std::endl;
-                        instruction.invalidate();
-                        break;
-                    }
-                    instruction.setBusA(reg);
-                    if (!instructionStream.eof())
-                    {
-                        std::cout << "Error: invalid instruction!" << std::endl;
-                        instruction.invalidate();
-                        break;
-                    }
-                }
-                else if (!strcmp(token.substr(0, 4).c_str(), "band"))
-                {
-                    instruction.setAlu(ALU::A_AND_B);
-                    if (token.length() < 6)
-                    {
-                        std::cout << "Error: invalid band instruction! Please avoid any unnecessary spaces in band!" << std::endl;
-                        instruction.invalidate();
-                        break;
-                    }
-                    auto regLeft = toRegister(token.substr(5, token.length() - 6));
-                    if (regLeft == INVALID)
-                    {
-                        std::cout << "Error: invalid register!" << std::endl;
-                        instruction.invalidate();
-                        break;
-                    }
-                    instruction.setBusA(regLeft);
-                    std::getline(instructionStream, token, ' ');
-                    auto regRight = toRegister(token.substr(0, token.length() - 1));
-                    if (regRight == INVALID)
-                    {
-                        std::cout << "Error: invalid register!" << std::endl;
-                        instruction.invalidate();
-                        break;
-                    }
-                    instruction.setBusB(regRight);
-                    if (!instructionStream.eof())
-                    {
-                        std::cout << "Error (band): invalid instruction!" << std::endl;
-                        instruction.invalidate();
-                        break;
-                    }
-                }
-                else if (!strcmp(token.substr(0, 6).c_str(), "rshift"))
+                if (!strcmp(token.substr(0, 6).c_str(), "rshift"))
                 {
                     instruction.setSh(SH::RIGHT_SHIFT);
-                    std::getline(instructionStream, token, ' ');
-                }
-                else if (!strcmp(token.substr(0, 6).c_str(), "lshift"))
-                {
-                    instruction.setAlu(SH::LEFT_SHIFT);
-                    std::getline(instructionStream, token, ' ');
-                }
-                else
-                {
-                    std::string expression = token;
+                    std::string expression = token.substr(7, token.length() - 7);
                     while (std::getline(instructionStream, token, ' '))
                     {
                         expression += " " + token;
                     }
-                    arithmeticPlus(instruction, instructionMarker, expression);
+                    expression = expression.substr(0, expression.length() - 1);
+                    auto res = arithmetic(instruction, instructionMarker, expression);
+                    if (!res)
+                    {
+                        instruction.invalidate();
+                        break;
+                    }
+                }
+                else if (!strcmp(token.substr(0, 6).c_str(), "lshift"))
+                {
+                    instruction.setSh(SH::LEFT_SHIFT);
+                    std::string expression = token.substr(7, token.length() - 7);
+                    while (std::getline(instructionStream, token, ' '))
+                    {
+                        expression += " " + token;
+                    }
+                    expression = expression.substr(0, expression.length() - 1);
+                    auto res = arithmetic(instruction, instructionMarker, expression);
+                    if (!res)
+                    {
+                        instruction.invalidate();
+                        break;
+                    }
+                }
+                else
+                {
+                    auto expression = token;
+                    while (std::getline(instructionStream, token, ' '))
+                    {
+                        expression += " " + token;
+                    }
+                    auto res = arithmetic(instruction, instructionMarker, expression);
+                    if (!res)
+                    {
+                        instruction.invalidate();
+                        break;
+                    }
                 }
             }
         }
@@ -327,6 +297,85 @@ void parser::initRegisterTable() {
     registerTable.insert({"alu", REGISTER::ALU});
 }
 
+bool parser::arithmetic(instruction &instruction, bool *instructionMarker, const std::string &expression)
+{
+    std::stringstream instructionStream {expression};
+    std::string token;
+    std::getline(instructionStream, token, ' ');
+
+    if (!strcmp(token.substr(0, 3).c_str(), "inv"))
+    {
+        instruction.setAlu(ALU::NEG_A);
+        if (token.length() < 5 || token.substr(token.length() - 1, 1) != ")")
+        {
+            std::cout << "Error: invalid inv instruction! Please avoid any unnecessary spaces in band!" << std::endl;
+            instruction.invalidate();
+            return false;
+        }
+        auto reg = toRegister(token.substr(4, token.length() - 5));
+        if (reg == INVALID)
+        {
+            std::cout << "Error: invalid register!" << std::endl;
+            instruction.invalidate();
+            return false;
+        }
+        instruction.setBusA(reg);
+        if (!instructionStream.eof())
+        {
+            std::cout << "Error: invalid instruction!" << std::endl;
+            instruction.invalidate();
+            return false;
+        }
+    }
+    else if (!strcmp(token.substr(0, 4).c_str(), "band"))
+    {
+        instruction.setAlu(ALU::A_AND_B);
+        if (token.length() < 6)
+        {
+            std::cout << "Error: invalid band instruction! Please avoid any unnecessary spaces in band!" << std::endl;
+            instruction.invalidate();
+            return false;
+        }
+        auto regLeft = toRegister(token.substr(5, token.length() - 6));
+        if (regLeft == INVALID)
+        {
+            std::cout << "Error: invalid register!" << std::endl;
+            instruction.invalidate();
+            return false;
+        }
+        instruction.setBusA(regLeft);
+        std::getline(instructionStream, token, ' ');
+        auto regRight = toRegister(token.substr(0, token.length() - 1));
+        if (regRight == INVALID)
+        {
+            std::cout << "Error: invalid register!" << std::endl;
+            instruction.invalidate();
+            return false;
+        }
+        instruction.setBusB(regRight);
+        if (!instructionStream.eof())
+        {
+            std::cout << "Error (band): invalid instruction!" << std::endl;
+            instruction.invalidate();
+            return false;
+        }
+    }
+    else
+    {
+        std::string expr = token;
+        while (std::getline(instructionStream, token, ' '))
+        {
+            expr += " " + token;
+        }
+        auto res = arithmeticPlus(instruction, instructionMarker, expr);
+        if (!res)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
 bool parser::arithmeticPlus(instruction &instruction, bool *instructionMarker, const std::string &expression) {
     std::stringstream expressionStream(expression);
     std::string token;
@@ -345,6 +394,7 @@ bool parser::arithmeticPlus(instruction &instruction, bool *instructionMarker, c
     // End if there is no additional operation
     if (expressionStream.eof())
     {
+        instruction.setAlu(ALU::POS_A);
         return true;
     }
     // Check for plus operation
