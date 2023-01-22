@@ -38,6 +38,10 @@ namespace PARSE_TEST {
 
     bool test_mbr(parser &p);
 
+    bool test_mar(parser &p);
+
+    bool test_mbr_2(parser &p);
+
     bool run()
     {
         // Variables
@@ -55,7 +59,9 @@ namespace PARSE_TEST {
                                       test_shift,
                                       test_advanced,
                                       complex_test,
-                                      test_mbr};
+                                      test_mbr,
+                                      test_mar,
+                                      test_mbr_2};
 
         // Run tests
         for (const auto &test: tests)
@@ -495,6 +501,46 @@ namespace PARSE_TEST {
         if (!i.isValid())
             success = false;
         return success;
+    }
+
+    bool test_mar(parser &p)
+    {
+        std::cout << "  <T> MAR" << std::endl;
+        // mar := c;
+        std::string resReg = "mar";
+        std::string reg = "c";
+        std::string input = resReg + " := " + reg + ";";
+        instruction i = p.parse(input);
+        auto code = i.getCode();
+        dword correctCode = C << BUS_B_SH;
+        correctCode |= YES << MAR_SH;
+        if (!i.isValid())
+            return false;
+        if (code != correctCode)
+            return false;
+        // mar := c; b := a + c;   --> should be valid
+        resReg = "mar";
+        reg = "c";
+        std::string reg2 = "a";
+        input = resReg + " := " + reg + "; b := " + reg2 + " + " + reg + ";";
+        i = p.parse(input);
+        if (!i.isValid())
+            return false;
+        // mar := c; b := b + d;   --> should be invalid
+        resReg = "mar";
+        reg = "c";
+        reg2 = "b";
+        input = resReg + " := " + reg + "; b := " + reg2 + " + d;";
+        i = p.parse(input);
+        if (i.isValid())
+            return false;
+        return true;
+    }
+
+    bool test_mbr_2(parser &p)
+    {
+        // TODO: Test mbr being in the right side of an assignment
+        return true;
     }
 }
 

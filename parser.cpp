@@ -190,6 +190,37 @@ instruction parser::parse(const std::string &input) {
                     instructionMarker[MARK::MMBR] = true;
                     instruction.setMbr(ACTIVATE::YES);
                 }
+                else if ((REGISTER)resReg == MAR)
+                {
+                    instructionMarker[MARK::MMAR] = true;
+                    instruction.setMar(ACTIVATE::YES);
+                    // This rule will be an exception, since mar has to be processed differently
+                    std::getline(instructionStream, token, ' ');
+                    token = trim(token);
+                    if (token != ":=")
+                    {
+                        std::cout << "Error: invalid assignment operator!" << std::endl;
+                        instruction.invalidate();
+                        break;
+                    }
+                    std::getline(instructionStream, token, ' ');
+                    auto reg = toRegister(token);
+                    if (reg == INVALID)
+                    {
+                        std::cout << "Error: invalid register!" << std::endl;
+                        instruction.invalidate();
+                        break;
+                    }
+                    if (instructionMarker[MARK::MB] && instruction.getBusB() != reg)
+                    {
+                        std::cout << "Error: bus B error!" << std::endl;
+                        instruction.invalidate();
+                        break;
+                    }
+                    instructionMarker[MARK::MB] = true;
+                    instruction.setBusB(reg);
+                    break;
+                }
                 else
                 {
                     instructionMarker[MARK::MC] = true;
