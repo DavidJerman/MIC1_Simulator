@@ -11,7 +11,6 @@ simulator::simulator() {
 
 void simulator::next() {
     // Will execute the next clock cycle
-
 }
 
 void simulator::test_memory() {
@@ -126,5 +125,11 @@ void simulator::run_tests() {
 }
 
 void simulator::parse(const std::string& input) {
-
+    auto instruction = _parser.parse(input);
+    if (!instruction.isValid()) {
+        std::cout << "Invalid instruction" << std::endl;
+    } else {
+        // Run the instruction
+        std::cout << "Running instruction: " << std::endl << instruction.toString() << std::endl;
+    }
 }

@@ -22,6 +22,7 @@ set(CPP_HEADER_FILES
         instruction.h
         parser.h
         tests/test_parser.h
-        tests/run_tests.h)
+        tests/run_tests.h
+        tests/test_simulator.h)
 
 add_executable(HOMicSim ${CPP_SOURCE_FILES} ${CPP_HEADER_FILES})

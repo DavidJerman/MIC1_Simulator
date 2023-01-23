@@ -159,3 +159,27 @@ byte instruction::getAddress() const {
 void instruction::setAddress(byte newAddress) {
     instruction::address = newAddress;
 }
+
+std::string instruction::toString() const {
+    std::stringstream ss;
+    ss << "Amux: " << (amux == AMUX::A_LATCH ? "A Latch" : "MBR") << std::endl;
+    ss << "Cond: " << (cond == COND::JUMP ? "Always Jump" :
+                       cond == COND::NO_JUMP ? "No Jump" :
+                       cond == COND::N_JUMP ? "N Jump" : "Z Jump") << std::endl;
+    ss << "Alu: " << (alu == ALU::A_PLUS_B ? "+" :
+                      alu == ALU::A_AND_B ? "&" :
+                      alu == ALU::POS_A ? "Pos A" : "Neg A") << std::endl;
+    ss << "Sh: " << (sh == SH::NO_SHIFT ? "No Shift" :
+                     sh == SH::LEFT_SHIFT ? "Left Shift" :
+                     sh == SH::RIGHT_SHIFT ? "Right Shift" : "Invalid Shift") << std::endl;
+    ss << "Mbr: " << (mbr == YES ? "Yes" : "No") << std::endl;
+    ss << "Mar: " << (mar == YES ? "Yes" : "No") << std::endl;
+    ss << "Rd: " << (rd == YES ? "Yes" : "No") << std::endl;
+    ss << "Wr: " << (wr == YES ? "Yes" : "No") << std::endl;
+    ss << "Enc: " << (enc == YES ? "Yes" : "No") << std::endl;
+    ss << "Bus C: " << "0x" << std::hex << (int) busC << std::endl;
+    ss << "Bus B: " << "0x" << std::hex << (int) busB << std::endl;
+    ss << "Bus A: " << "0x" << std::hex << (int) busA << std::endl;
+    ss << "Address: " << "0x" << std::hex << (int) address << std::endl;
+    return ss.str();
+}

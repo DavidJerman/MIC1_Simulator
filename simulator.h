@@ -40,6 +40,8 @@ private:
 
     static std::string getHexStr(word value);
 
+    parser _parser;
+
     memory _memory;
     registers _registers;
     alu _alu;

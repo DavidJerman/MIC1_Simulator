@@ -5,7 +5,8 @@
 #ifndef HOMICSIM_INSTRUCTION_H
 #define HOMICSIM_INSTRUCTION_H
 
-
+#include <string>
+#include <sstream>
 #include "constants.h"
 
 class instruction {
@@ -73,6 +74,8 @@ public:
     [[nodiscard]] byte getAddress() const;
 
     void setAddress(byte newAddress);
+
+    std::string toString() const;
 
 private:
     int amux{};

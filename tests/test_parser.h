@@ -173,6 +173,7 @@ namespace PARSE_TEST {
         correctCode |= A << BUS_A_SH;
         correctCode |= A << BUS_B_SH;
         correctCode |= A << BUS_C_SH;
+        correctCode |= YES << ENC_SH;
         if (!i.isValid())
             success = false;
         if (code != correctCode)
@@ -188,6 +189,7 @@ namespace PARSE_TEST {
         correctCode |= A << BUS_A_SH;
         correctCode |= B << BUS_B_SH;
         correctCode |= A << BUS_C_SH;
+        correctCode |= YES << ENC_SH;
         if (!i.isValid())
             success = false;
         if (code != correctCode)
@@ -203,6 +205,7 @@ namespace PARSE_TEST {
         correctCode |= B << BUS_A_SH;
         correctCode |= A << BUS_B_SH;
         correctCode |= A << BUS_C_SH;
+        correctCode |= YES << ENC_SH;
         if (!i.isValid())
             success = false;
         if (code != correctCode)
@@ -218,6 +221,7 @@ namespace PARSE_TEST {
         correctCode |= B << BUS_A_SH;
         correctCode |= C << BUS_B_SH;
         correctCode |= A << BUS_C_SH;
+        correctCode |= YES << ENC_SH;
         if (!i.isValid())
             success = false;
         if (code != correctCode)
@@ -240,6 +244,7 @@ namespace PARSE_TEST {
         correctCode |= A << BUS_A_SH;
         correctCode |= A << BUS_B_SH;
         correctCode |= A << BUS_C_SH;
+        correctCode |= YES << ENC_SH;
         if (!i.isValid())
             success = false;
         if (code != correctCode)
@@ -255,6 +260,7 @@ namespace PARSE_TEST {
         correctCode |= A << BUS_A_SH;
         correctCode |= B << BUS_B_SH;
         correctCode |= C << BUS_C_SH;
+        correctCode |= YES << ENC_SH;
         if (!i.isValid())
             success = false;
         if (code != correctCode)
@@ -275,6 +281,7 @@ namespace PARSE_TEST {
         dword correctCode = NEG_A << ALU_SH;
         correctCode |= A << BUS_A_SH;
         correctCode |= A << BUS_C_SH;
+        correctCode |= YES << ENC_SH;
         if (!i.isValid())
             success = false;
         if (code != correctCode)
@@ -288,6 +295,7 @@ namespace PARSE_TEST {
         correctCode = NEG_A << ALU_SH;
         correctCode |= A << BUS_A_SH;
         correctCode |= C << BUS_C_SH;
+        correctCode |= YES << ENC_SH;
         if (!i.isValid())
             success = false;
         if (code != correctCode)
@@ -308,6 +316,7 @@ namespace PARSE_TEST {
         dword correctCode = POS_A << ALU_SH;
         correctCode |= A << BUS_A_SH;
         correctCode |= A << BUS_C_SH;
+        correctCode |= YES << ENC_SH;
         if (!i.isValid())
             success = false;
         if (code != correctCode)
@@ -321,6 +330,7 @@ namespace PARSE_TEST {
         correctCode = POS_A << ALU_SH;
         correctCode |= A << BUS_A_SH;
         correctCode |= C << BUS_C_SH;
+        correctCode |= YES << ENC_SH;
         if (!i.isValid())
             success = false;
         if (code != correctCode)
@@ -334,6 +344,7 @@ namespace PARSE_TEST {
         correctCode = POS_A << ALU_SH;
         correctCode |= N1 << BUS_A_SH;
         correctCode |= C << BUS_C_SH;
+        correctCode |= YES << ENC_SH;
         if (!i.isValid())
             success = false;
         if (code != correctCode)
@@ -354,6 +365,7 @@ namespace PARSE_TEST {
         correctCode |= A << BUS_A_SH;
         correctCode |= A << BUS_C_SH;
         correctCode |= LEFT_SHIFT << SH_SH;
+        correctCode |= YES << ENC_SH;
         if (!i.isValid())
             return false;
         if (code != correctCode)
@@ -368,6 +380,7 @@ namespace PARSE_TEST {
         correctCode |= B << BUS_A_SH;
         correctCode |= C << BUS_C_SH;
         correctCode |= RIGHT_SHIFT << SH_SH;
+        correctCode |= YES << ENC_SH;
         if (!i.isValid())
             return false;
         if (code != correctCode)
@@ -391,6 +404,7 @@ namespace PARSE_TEST {
         correctCode |= B << BUS_B_SH;
         correctCode |= A << BUS_C_SH;
         correctCode |= LEFT_SHIFT << SH_SH;
+        correctCode |= YES << ENC_SH;
         if (!i.isValid())
             success = false;
         if (code != correctCode)
@@ -407,6 +421,7 @@ namespace PARSE_TEST {
         correctCode |= B << BUS_B_SH;
         correctCode |= C << BUS_C_SH;
         correctCode |= RIGHT_SHIFT << SH_SH;
+        correctCode |= YES << ENC_SH;
         if (!i.isValid())
             success = false;
         if (code != correctCode)
@@ -423,6 +438,7 @@ namespace PARSE_TEST {
         correctCode |= N1 << BUS_B_SH;
         correctCode |= C << BUS_C_SH;
         correctCode |= RIGHT_SHIFT << SH_SH;
+        correctCode |= YES << ENC_SH;
         if (!i.isValid())
             success = false;
         if (code != correctCode)
@@ -450,6 +466,7 @@ namespace PARSE_TEST {
         correctCode |= Z_JUMP << COND_SH;
         correctCode |= address << ADDRESS_SH;
         correctCode |= YES << RD_SH;
+        correctCode |= YES << ENC_SH;
         if (!i.isValid())
             success = false;
         if (code != correctCode)
@@ -468,6 +485,7 @@ namespace PARSE_TEST {
         correctCode |= N_JUMP << COND_SH;
         correctCode |= address << ADDRESS_SH;
         correctCode |= YES << WR_SH;
+        correctCode |= YES << ENC_SH;
         if (!i.isValid())
             success = false;
         if (code != correctCode)
