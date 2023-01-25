@@ -86,7 +86,7 @@ namespace PARSE_TEST {
         // Read
         std::cout << "  <T> Read" << std::endl;
         std::string input = "rd;";
-        instruction i = p.parse(input);
+        instruction i = p.parseLine(input);
         auto code = i.getCode();
         dword correctCode = 1 << RD_SH;
         if (!i.isValid())
@@ -101,7 +101,7 @@ namespace PARSE_TEST {
         // Write
         std::cout << "  <T> Write" << std::endl;
         std::string input = "wr;";
-        instruction i = p.parse(input);
+        instruction i = p.parseLine(input);
         auto code = i.getCode();
         dword correctCode = 1 << WR_SH;
         if (!i.isValid())
@@ -117,7 +117,7 @@ namespace PARSE_TEST {
         std::cout << "  <T> Goto" << std::endl;
         byte address = 99;
         std::string input = "goto " + std::to_string(address) + ";";
-        instruction i = p.parse(input);
+        instruction i = p.parseLine(input);
         auto code = i.getCode();
         dword correctCode = JUMP << COND_SH;
         correctCode |= address;
@@ -136,7 +136,7 @@ namespace PARSE_TEST {
         byte address = 99;
         std::string flag = "z";
         std::string input = "if " + flag + " then goto " + std::to_string(address) + ";";
-        instruction i = p.parse(input);
+        instruction i = p.parseLine(input);
         auto code = i.getCode();
         dword correctCode = Z_JUMP << COND_SH;
         correctCode |= address;
@@ -147,7 +147,7 @@ namespace PARSE_TEST {
         // If n
         flag = "n";
         input = "if " + flag + " then goto " + std::to_string(address) + ";";
-        i = p.parse(input);
+        i = p.parseLine(input);
         code = i.getCode();
         correctCode = N_JUMP << COND_SH;
         correctCode |= address;
@@ -167,7 +167,7 @@ namespace PARSE_TEST {
         std::string rightReg = "a";
         std::string resReg = "a";
         std::string input = resReg + " := " + leftReg + " + " + rightReg + ";";
-        instruction i = p.parse(input);
+        instruction i = p.parseLine(input);
         auto code = i.getCode();
         dword correctCode = A_PLUS_B << ALU_SH;
         correctCode |= A << BUS_A_SH;
@@ -183,7 +183,7 @@ namespace PARSE_TEST {
         rightReg = "b";
         resReg = "a";
         input = resReg + " := " + leftReg + " + " + rightReg + ";";
-        i = p.parse(input);
+        i = p.parseLine(input);
         code = i.getCode();
         correctCode = A_PLUS_B << ALU_SH;
         correctCode |= A << BUS_A_SH;
@@ -199,7 +199,7 @@ namespace PARSE_TEST {
         rightReg = "a";
         resReg = "a";
         input = resReg + " := " + leftReg + " + " + rightReg + ";";
-        i = p.parse(input);
+        i = p.parseLine(input);
         code = i.getCode();
         correctCode = A_PLUS_B << ALU_SH;
         correctCode |= B << BUS_A_SH;
@@ -215,7 +215,7 @@ namespace PARSE_TEST {
         rightReg = "c";
         resReg = "a";
         input = resReg + " := " + leftReg + " + " + rightReg + ";";
-        i = p.parse(input);
+        i = p.parseLine(input);
         code = i.getCode();
         correctCode = A_PLUS_B << ALU_SH;
         correctCode |= B << BUS_A_SH;
@@ -238,7 +238,7 @@ namespace PARSE_TEST {
         std::string leftReg = "a";
         std::string rightReg = "a";
         std::string input = resReg + " := band(" + leftReg + ", " + rightReg + ");";
-        instruction i = p.parse(input);
+        instruction i = p.parseLine(input);
         auto code = i.getCode();
         dword correctCode = A_AND_B << ALU_SH;
         correctCode |= A << BUS_A_SH;
@@ -254,7 +254,7 @@ namespace PARSE_TEST {
         leftReg = "a";
         rightReg = "b";
         input = resReg + " := band(" + leftReg + ", " + rightReg + ");";
-        i = p.parse(input);
+        i = p.parseLine(input);
         code = i.getCode();
         correctCode = A_AND_B << ALU_SH;
         correctCode |= A << BUS_A_SH;
@@ -276,7 +276,7 @@ namespace PARSE_TEST {
         std::string resReg = "a";
         std::string reg = "a";
         std::string input = resReg + " := inv(" + reg + ");";
-        instruction i = p.parse(input);
+        instruction i = p.parseLine(input);
         auto code = i.getCode();
         dword correctCode = NEG_A << ALU_SH;
         correctCode |= A << BUS_A_SH;
@@ -290,7 +290,7 @@ namespace PARSE_TEST {
         resReg = "c";
         reg = "a";
         input = resReg + " := inv(" + reg + ");";
-        i = p.parse(input);
+        i = p.parseLine(input);
         code = i.getCode();
         correctCode = NEG_A << ALU_SH;
         correctCode |= A << BUS_A_SH;
@@ -311,7 +311,7 @@ namespace PARSE_TEST {
         std::string resReg = "a";
         std::string reg = "a";
         std::string input = resReg + " := " + reg + ";";
-        instruction i = p.parse(input);
+        instruction i = p.parseLine(input);
         auto code = i.getCode();
         dword correctCode = POS_A << ALU_SH;
         correctCode |= A << BUS_A_SH;
@@ -325,7 +325,7 @@ namespace PARSE_TEST {
         resReg = "c";
         reg = "a";
         input = resReg + " := " + reg + ";";
-        i = p.parse(input);
+        i = p.parseLine(input);
         code = i.getCode();
         correctCode = POS_A << ALU_SH;
         correctCode |= A << BUS_A_SH;
@@ -339,7 +339,7 @@ namespace PARSE_TEST {
         resReg = "c";
         reg = "(-1)";
         input = resReg + " := " + reg + ";";
-        i = p.parse(input);
+        i = p.parseLine(input);
         code = i.getCode();
         correctCode = POS_A << ALU_SH;
         correctCode |= N1 << BUS_A_SH;
@@ -359,7 +359,7 @@ namespace PARSE_TEST {
         std::string resReg = "a";
         std::string reg = "a";
         std::string input = resReg + " := lshift(" + reg + ");";
-        instruction i = p.parse(input);
+        instruction i = p.parseLine(input);
         auto code = i.getCode();
         dword correctCode = POS_A << ALU_SH;
         correctCode |= A << BUS_A_SH;
@@ -374,7 +374,7 @@ namespace PARSE_TEST {
         resReg = "c";
         reg = "b";
         input = resReg + " := rshift(" + reg + ");";
-        i = p.parse(input);
+        i = p.parseLine(input);
         code = i.getCode();
         correctCode = POS_A << ALU_SH;
         correctCode |= B << BUS_A_SH;
@@ -397,7 +397,7 @@ namespace PARSE_TEST {
         std::string regLeft = "a";
         std::string regRight = "b";
         std::string input = resReg + " := lshift(" + regLeft + " + " + regRight + ");";
-        instruction i = p.parse(input);
+        instruction i = p.parseLine(input);
         auto code = i.getCode();
         dword correctCode = A_PLUS_B << ALU_SH;
         correctCode |= A << BUS_A_SH;
@@ -414,7 +414,7 @@ namespace PARSE_TEST {
         regLeft = "a";
         regRight = "b";
         input = resReg + " := rshift(" + regLeft + " + " + regRight + ");";
-        i = p.parse(input);
+        i = p.parseLine(input);
         code = i.getCode();
         correctCode = A_PLUS_B << ALU_SH;
         correctCode |= A << BUS_A_SH;
@@ -431,7 +431,7 @@ namespace PARSE_TEST {
         regLeft = "a";
         regRight = "(-1)";
         input = resReg + " := rshift(band(" + regLeft + ", " + regRight + "));";
-        i = p.parse(input);
+        i = p.parseLine(input);
         code = i.getCode();
         correctCode = A_AND_B << ALU_SH;
         correctCode |= A << BUS_A_SH;
@@ -456,7 +456,7 @@ namespace PARSE_TEST {
         std::string regRight = "b";
         byte address = 22;
         std::string input = resReg + " := lshift(" + regLeft + " + " + regRight + "); if z then goto " + std::to_string(address) + "; rd;";
-        instruction i = p.parse(input);
+        instruction i = p.parseLine(input);
         auto code = i.getCode();
         dword correctCode = A_PLUS_B << ALU_SH;
         correctCode |= A << BUS_A_SH;
@@ -476,7 +476,7 @@ namespace PARSE_TEST {
         regLeft = "a";
         address = 22;
         input = resReg + " := rshift(inv(" + regLeft + ")); if n then goto " + std::to_string(address) + "; wr;";
-        i = p.parse(input);
+        i = p.parseLine(input);
         code = i.getCode();
         correctCode = NEG_A << ALU_SH;
         correctCode |= A << BUS_A_SH;
@@ -501,21 +501,21 @@ namespace PARSE_TEST {
         std::string resReg = "_mbr";
         std::string reg = "a";
         std::string input = resReg + " := " + reg + "; c := d;";
-        instruction i = p.parse(input);
+        instruction i = p.parseLine(input);
         if (i.isValid())
             success = false;
         // _mbr := a;   --> should be valid
         resReg = "_mbr";
         reg = "a";
         input = resReg + " := " + reg + ";";
-        i = p.parse(input);
+        i = p.parseLine(input);
         if (!i.isValid())
             success = false;
         // _mbr := a; c := a;   --> should be valid
         resReg = "_mbr";
         reg = "a";
         input = resReg + " := " + reg + "; c := a;";
-        i = p.parse(input);
+        i = p.parseLine(input);
         if (!i.isValid())
             success = false;
         return success;
@@ -528,7 +528,7 @@ namespace PARSE_TEST {
         std::string resReg = "_mar";
         std::string reg = "c";
         std::string input = resReg + " := " + reg + ";";
-        instruction i = p.parse(input);
+        instruction i = p.parseLine(input);
         auto code = i.getCode();
         dword correctCode = C << BUS_B_SH;
         correctCode |= YES << MAR_SH;
@@ -541,7 +541,7 @@ namespace PARSE_TEST {
         reg = "c";
         std::string reg2 = "a";
         input = resReg + " := " + reg + "; b := " + reg2 + " + " + reg + ";";
-        i = p.parse(input);
+        i = p.parseLine(input);
         if (!i.isValid())
             return false;
         // _mar := c; b := b + d;   --> should be invalid
@@ -549,7 +549,7 @@ namespace PARSE_TEST {
         reg = "c";
         reg2 = "b";
         input = resReg + " := " + reg + "; b := " + reg2 + " + d;";
-        i = p.parse(input);
+        i = p.parseLine(input);
         if (i.isValid())
             return false;
         return true;

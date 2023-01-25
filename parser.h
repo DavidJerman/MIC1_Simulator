@@ -8,13 +8,19 @@
 #include <string>
 #include <sstream>
 #include <map>
+#include <vector>
+#include <fstream>
 #include "instruction.h"
 
 class parser {
 public:
     parser();
 
-    instruction parse(const std::string& input);
+    instruction parseLine(const std::string& input);
+
+    std::vector<instruction> parseFile(const std::string& path);
+
+    std::vector<instruction> parseProgram(std::istream& stream);
 
 private:
     static bool findCharAfterSpaces(const std::string &s, char c, int offset);

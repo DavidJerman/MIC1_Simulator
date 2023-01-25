@@ -11,7 +11,7 @@
 
 class instruction {
 public:
-    instruction() = default;
+    instruction();
 
     explicit instruction(dword value);
 
@@ -20,6 +20,9 @@ public:
 
     // Move constructor
     instruction(instruction&& other) noexcept;
+
+    // Copy assignment operator
+    instruction& operator=(const instruction& other);
 
     void setCode(dword value);
 
@@ -83,6 +86,10 @@ public:
 
     [[nodiscard]] std::string toString() const;
 
+    unsigned int getId() const;
+
+    void setId(unsigned int id);
+
 private:
     int amux{};
     int cond{};
@@ -99,6 +106,7 @@ private:
     byte address{};
 
     bool valid{};
+    unsigned int ID{};
 };
 
 

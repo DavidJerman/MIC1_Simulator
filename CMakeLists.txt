@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.21)
 project(HOMicSim)
 
+# Copy program.mp to build directory
+configure_file(program.mp program.mp COPYONLY)
+
 set(CMAKE_CXX_STANDARD 17)
 
 set(CPP_SOURCE_FILES

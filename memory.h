@@ -17,8 +17,8 @@ public:
     void write();
 
     [[nodiscard]] word getMbr() const;
-    void setMbr(word _mbr);
-    void setMar(word _mar);
+    void setMbr(word mbr);
+    void setMar(word mar);
 
     void reset();
 

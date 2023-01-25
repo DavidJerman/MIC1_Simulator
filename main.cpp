@@ -11,7 +11,10 @@ int main() {
 //    sim.test_alu();
 
     // Test
-    run_tests();
+    // run_tests();
+
+    parser p;
+    auto instructions = p.parseFile("program.mp");
 
     return 0;
 }

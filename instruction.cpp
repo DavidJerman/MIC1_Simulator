@@ -191,3 +191,16 @@ instruction::instruction(const instruction &other) {
 instruction::instruction(instruction &&other) noexcept {
     setCode(other.getCode());
 }
+
+unsigned int instruction::getId() const {
+    return ID;
+}
+
+void instruction::setId(unsigned int id) {
+    ID = id;
+}
+
+instruction &instruction::operator=(const instruction &other) {
+    setCode(other.getCode());
+    return *this;
+}

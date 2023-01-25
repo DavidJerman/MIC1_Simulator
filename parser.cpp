@@ -11,7 +11,7 @@ parser::parser() {
     initRegisterTable();
 }
 
-instruction parser::parse(const std::string &input) {
+instruction parser::parseLine(const std::string &input) {
     // Covert to an instruction
     // Bits for checking if the property of an instruction has already been set
     bool instructionMarker[13]{false};
@@ -535,4 +535,51 @@ bool parser::setB(instruction &instruction, bool *instructionMarker, const REGIS
     instructionMarker[MARK::MB] = true;
     instruction.setBusB(reg);
     return true;
+}
+
+std::vector<instruction> parser::parseFile(const std::string &path) {
+    std::ifstream stream;
+    stream.open(path);
+    if (!stream.is_open())
+    {
+        std::cerr << "Error: cannot open file!" << std::endl;
+        return {};
+    }
+    return parseProgram(stream);
+}
+
+std::vector<instruction> parser::parseProgram(std::istream &stream) {
+    std::vector<instruction> instructions;
+    std::string token;
+    int lineCounter = 0;
+    int instructionCounter = 0;
+    while (std::getline(stream, token))
+    {
+        std::stringstream tokenStream(token);
+        std::getline(tokenStream, token, ':');
+        auto label = trim(token);
+        if (label[0] == '#')
+        {
+            lineCounter++;
+            continue;
+        }
+        if (label.empty() || instructionCounter != std::stoi(label))
+        {
+            std::cerr << "Error: invalid label in line " << lineCounter << "!" << std::endl;
+            return {};
+        }
+        std::getline(tokenStream, token);
+        auto instruction = parseLine(token);
+        if (instruction.isValid())
+        {
+            instructions.push_back(instruction);
+            instructionCounter++;
+        } else
+        {
+            std::cerr << "Error: invalid instruction in line " << lineCounter << "!" << std::endl;
+            return {};
+        }
+        lineCounter++;
+    }
+    return instructions;
 }

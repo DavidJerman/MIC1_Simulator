@@ -62,15 +62,15 @@ word memory::getMbr() const {
     return _mbr;
 }
 
-void memory::setMbr(word _mbr) {
-    this->_mbr = _mbr;
+void memory::setMbr(word mbr) {
+    this->_mbr = mbr;
 }
 
-void memory::setMar(word _mar) {
+void memory::setMar(word mar) {
     if (_ioState == IO_STATE::BUSY) {
         throw memory_bus_exception();
     }
-    this->_mar = _mar;
+    this->_mar = mar;
 }
 
 void memory::reset() {
