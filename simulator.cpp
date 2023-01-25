@@ -7,6 +7,9 @@
 simulator::simulator() {
     _memory = memory();
     _registers = registers();
+    _alu = alu();
+    _amux = amux();
+    _shifter = shifter();
 }
 
 void simulator::next() {
@@ -16,21 +19,65 @@ void simulator::next() {
         {
             subCycle++;
 
+            // First cycle sets all components' properties according to the current instruction
+            _amux.set(_currentInstruction.getAmux());
+            _alu.setOp(_currentInstruction.getAlu());
+            // TODO: connect shifter to ALU and AMUX to ALU
+            _shifter.set(_currentInstruction.getSh());
+            _memory.setSetMar(_currentInstruction.getMar());
+            _memory.setSetMbr(_currentInstruction.getMbr());
+            _memory.setRd(_currentInstruction.getRd());
+            _memory.setWr(_currentInstruction.getWr());
+            _registers.setEnc(_currentInstruction.getEnc());
+            _registers.setA(_currentInstruction.getBusA());
+            _registers.setB(_currentInstruction.getBusB());
+            _registers.setC(_currentInstruction.getBusC());
+            if (_currentInstruction.getCond() == COND::JUMP)
+                _jumpAddress = _currentInstruction.getAddress();
+            // TODO: How should I deal with cond?
+
             break;
         }
         case 1:
         {
             subCycle++;
+
+            // Latches are simulated via this cycle - there is no independent latch component
+
+            // Amux
+            _amux.setA(_registers.getA());
+            _amux.setMBR(_memory.getMbr());
+
+            // Alu
+            _alu.setA(_amux.wordOut());
+            _alu.setB(_registers.getB());
+
+            // Shifter
+            _shifter.wordIn(_alu.wordOut());
+
+            // Memory
+            _memory.setMbr(_shifter.wordOut());
+            _memory.setMar(_registers.getA());
+
+            // Registers
+            _registers.setValue(_shifter.wordOut());
+
             break;
         }
         case 2:
         {
             subCycle++;
+
+            // Memory - read/write is handled internally
+            _memory.read();
+            _memory.write();
+
             break;
         }
         case 3:
         {
             subCycle++;
+
             break;
         }
         case 4:
@@ -54,12 +101,12 @@ void simulator::test_memory() {
     _memory.setMar(0); _memory.read();
     _memory.read();
     auto mbr = _memory.getMbr();
-    std::cout << "mbr = " << getHexStr(mbr) << std::endl;
+    std::cout << "_mbr = " << getHexStr(mbr) << std::endl;
     // Another test_memory
     _memory.setMar(1); _memory.read();
     _memory.read();
     mbr = _memory.getMbr();
-    std::cout << "mbr = " << getHexStr(mbr) << std::endl;
+    std::cout << "_mbr = " << getHexStr(mbr) << std::endl;
     // Error test_memory 1
     try {
         _memory.setMar(0x1000); _memory.read();

@@ -10,7 +10,7 @@
 class memory_out_of_bounds_exception : public std::exception {
 public:
     [[nodiscard]] const char *what() const noexcept override {
-        return "Memory out of bounds - address is greater than 4096";
+        return "Memory out of bounds - _address is greater than 4096";
     }
 };
 

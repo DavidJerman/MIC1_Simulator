@@ -29,59 +29,59 @@ public:
 
     void invalidate();
 
-    [[nodiscard]] int getAmux() const;
+    [[nodiscard]] enum AMUX getAmux() const;
 
-    void setAmux(int newAmux);
+    void setAmux(enum AMUX newAmux);
 
-    [[nodiscard]] int getCond() const;
+    [[nodiscard]] enum COND getCond() const;
 
-    void setCond(int newCond);
+    void setCond(enum COND newCond);
 
-    [[nodiscard]] int getAlu() const;
+    [[nodiscard]] enum ALU getAlu() const;
 
-    void setAlu(int newAlu);
+    void setAlu(enum ALU newAlu);
 
-    [[nodiscard]] int getSh() const;
+    [[nodiscard]] enum SH getSh() const;
 
-    void setSh(int newSh);
+    void setSh(enum SH newSh);
 
-    [[nodiscard]] int getMbr() const;
+    [[nodiscard]] enum ACTIVATE getMbr() const;
 
-    void setMbr(int newMbr);
+    void setMbr(enum ACTIVATE newMbr);
 
-    [[nodiscard]] int getMar() const;
+    [[nodiscard]] enum ACTIVATE getMar() const;
 
-    void setMar(int newMar);
+    void setMar(enum ACTIVATE newMar);
 
-    [[nodiscard]] int getRd() const;
+    [[nodiscard]] enum ACTIVATE getRd() const;
 
-    void setRd(int newRd);
+    void setRd(enum ACTIVATE newRd);
 
-    [[nodiscard]] int getWr() const;
+    [[nodiscard]] enum ACTIVATE getWr() const;
 
-    void setWr(int newWr);
+    void setWr(enum ACTIVATE newWr);
 
-    [[nodiscard]] int getEnc() const;
+    [[nodiscard]] enum ACTIVATE getEnc() const;
 
-    void setEnc(int newEnc);
+    void setEnc(enum ACTIVATE newEnc);
 
-    [[nodiscard]] int getBusC() const;
+    [[nodiscard]] REGISTER getBusC() const;
 
-    void setBusC(int newBusC);
+    void setBusC(REGISTER newBusC);
 
-    [[nodiscard]] int getBusB() const;
+    [[nodiscard]] REGISTER getBusB() const;
 
-    void setBusB(int newBusB);
+    void setBusB(REGISTER newBusB);
 
-    [[nodiscard]] int getBusA() const;
+    [[nodiscard]] REGISTER getBusA() const;
 
-    void setBusA(int newBusA);
+    void setBusA(REGISTER newBusA);
 
     [[nodiscard]] byte getAddress() const;
 
     void setAddress(byte newAddress);
 
-    std::string toString() const;
+    [[nodiscard]] std::string toString() const;
 
 private:
     int amux{};

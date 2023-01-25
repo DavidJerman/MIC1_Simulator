@@ -151,7 +151,7 @@ instruction parser::parse(const std::string &input) {
                 std::getline(instructionStream, token, ' ');
                 if (!isNumber(token))
                 {
-                    std::cerr << "Error: invalid jump address in if statement!" << std::endl;
+                    std::cerr << "Error: invalid jump _address in if statement!" << std::endl;
                     instruction.invalidate();
                     break;
                 }
@@ -194,7 +194,7 @@ instruction parser::parse(const std::string &input) {
                 {
                     instructionMarker[MARK::MMAR] = true;
                     instruction.setMar(ACTIVATE::YES);
-                    // This rule will be an exception, since mar has to be processed differently
+                    // This rule will be an exception, since _mar has to be processed differently
                     std::getline(instructionStream, token, ' ');
                     token = trim(token);
                     if (token != ":=")
@@ -238,7 +238,7 @@ instruction parser::parse(const std::string &input) {
                 }
 
                 std::getline(instructionStream, token, ' ');
-                // TODO: Mar and mbr and such should be checked here!
+                // TODO: Mar and _mbr and such should be checked here!
                 // Option 1: register
                 // Option 2: band, inv, rshift, lshift
                 if (!strcmp(token.substr(0, 6).c_str(), "rshift"))
@@ -305,7 +305,7 @@ instruction parser::parse(const std::string &input) {
         }
     }
 
-    // Idea: process mar and mbr assignments separately
+    // Idea: process _mar and _mbr assignments separately
 
     return instruction;
 }
@@ -356,8 +356,8 @@ void parser::initRegisterTable() {
     registerTable.insert({"d", REGISTER::D});
     registerTable.insert({"e", REGISTER::E});
     registerTable.insert({"f", REGISTER::F});
-    registerTable.insert({"mar", REGISTER::MAR});
-    registerTable.insert({"mbr", REGISTER::MBR});
+    registerTable.insert({"_mar", REGISTER::MAR});
+    registerTable.insert({"_mbr", REGISTER::MBR});
     registerTable.insert({"alu", REGISTER::ALU});
 }
 

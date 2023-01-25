@@ -14,6 +14,7 @@
 #include "registers.h"
 #include "alu.h"
 #include "amux.h"
+#include "shifter.h"
 
 class simulator {
 public:
@@ -46,7 +47,10 @@ private:
     memory _memory;
     registers _registers;
     alu _alu;
+    amux _amux;
+    shifter _shifter;
 
+    byte _jumpAddress {0};
     instruction _currentInstruction {};
     int subCycle {0};
     int cycle {0};

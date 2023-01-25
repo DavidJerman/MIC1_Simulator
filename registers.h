@@ -11,14 +11,37 @@ class registers {
 public:
     registers();
 
-    word getReg(REGISTER _reg);
+    void setValue(word value);
 
-    void setReg(REGISTER _reg, word value);
+    [[nodiscard]] word getAValue() const;
+
+    [[nodiscard]] word getBValue() const;
 
     void reset();
 
+    [[nodiscard]] ACTIVATE getEnc() const;
+
+    void setEnc(ACTIVATE enc);
+
+    [[nodiscard]] REGISTER getA() const;
+
+    void setA(REGISTER a);
+
+    [[nodiscard]] REGISTER getB() const;
+
+    void setB(REGISTER b);
+
+    [[nodiscard]] REGISTER getC() const;
+
+    void setC(REGISTER c);
+
 private:
     word reg[REG_SIZE]{};
+
+    enum ACTIVATE _enc;
+    enum REGISTER _a;
+    enum REGISTER _b;
+    enum REGISTER _c;
 };
 
 #endif //HOMICSIM_REGISTERS_H

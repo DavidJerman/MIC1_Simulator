@@ -22,18 +22,39 @@ public:
 
     void reset();
 
+    [[nodiscard]] ACTIVATE getSetMar() const;
+
+    void setSetMar(ACTIVATE setMar);
+
+    [[nodiscard]] ACTIVATE getSetMbr() const;
+
+    void setSetMbr(ACTIVATE setMbr);
+
+    [[nodiscard]] ACTIVATE getRead() const;
+
+    void setRd(ACTIVATE read);
+
+    [[nodiscard]] ACTIVATE getWrite() const;
+
+    void setWr(ACTIVATE write);
+
 private:
     word read_word(word address);
     void write_word(word address, word value);
 
     // Memory is 4K
-    word mem[MEM_SIZE]{};
+    word _mem[MEM_SIZE]{};
 
-    word mar; // Memory Address Register --> Mar should not be changed while the memory is busy
-    word mbr; // Memory Data Register
+    word _mar; // Memory Address Register --> Mar should not be changed while the memory is busy
+    word _mbr; // Memory Data Register
 
-    IO_STATE io_state = IO_STATE::READY; // 0 = not busy, 1 = busy, 2 = ready to read/write
-    IO_MODE io_mode = IO_MODE::READ;
+    enum ACTIVATE _setMar;
+    enum ACTIVATE _setMbr;
+    enum ACTIVATE _read;
+    enum ACTIVATE _write;
+
+    IO_STATE _ioState = IO_STATE::READY; // 0 = not busy, 1 = busy, 2 = ready to read/write
+    IO_MODE _ioMode = IO_MODE::READ;
 };
 
 

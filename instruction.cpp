@@ -56,99 +56,99 @@ void instruction::invalidate() {
     valid = false;
 }
 
-int instruction::getAmux() const {
-    return amux;
+enum AMUX instruction::getAmux() const {
+    return (enum AMUX)amux;
 }
 
-void instruction::setAmux(int newAmux) {
+void instruction::setAmux(enum AMUX newAmux) {
     instruction::amux = newAmux;
 }
 
-int instruction::getCond() const {
-    return cond;
+enum COND instruction::getCond() const {
+    return (enum COND)cond;
 }
 
-void instruction::setCond(int newCond) {
+void instruction::setCond(enum COND newCond) {
     instruction::cond = newCond;
 }
 
-int instruction::getAlu() const {
-    return alu;
+enum ALU instruction::getAlu() const {
+    return (enum ALU)alu;
 }
 
-void instruction::setAlu(int newAlu) {
+void instruction::setAlu(enum ALU newAlu) {
     instruction::alu = newAlu;
 }
 
-int instruction::getSh() const {
-    return sh;
+enum SH instruction::getSh() const {
+    return (enum SH)sh;
 }
 
-void instruction::setSh(int newSh) {
+void instruction::setSh(enum SH newSh) {
     instruction::sh = newSh;
 }
 
-int instruction::getMbr() const {
-    return mbr;
+enum ACTIVATE instruction::getMbr() const {
+    return (enum ACTIVATE)mbr;
 }
 
-void instruction::setMbr(int newMbr) {
+void instruction::setMbr(enum ACTIVATE newMbr) {
     instruction::mbr = newMbr;
 }
 
-int instruction::getMar() const {
-    return mar;
+enum ACTIVATE instruction::getMar() const {
+    return (enum ACTIVATE)mar;
 }
 
-void instruction::setMar(int newMar) {
+void instruction::setMar(enum ACTIVATE newMar) {
     instruction::mar = newMar;
 }
 
-int instruction::getRd() const {
-    return rd;
+enum ACTIVATE instruction::getRd() const {
+    return (enum ACTIVATE)rd;
 }
 
-void instruction::setRd(int newRd) {
+void instruction::setRd(enum ACTIVATE newRd) {
     instruction::rd = newRd;
 }
 
-int instruction::getWr() const {
-    return wr;
+enum ACTIVATE instruction::getWr() const {
+    return (enum ACTIVATE)wr;
 }
 
-void instruction::setWr(int newWr) {
+void instruction::setWr(enum ACTIVATE newWr) {
     instruction::wr = newWr;
 }
 
-int instruction::getEnc() const {
-    return enc;
+enum ACTIVATE instruction::getEnc() const {
+    return (enum ACTIVATE)enc;
 }
 
-void instruction::setEnc(int newEnc) {
+void instruction::setEnc(enum ACTIVATE newEnc) {
     instruction::enc = newEnc;
 }
 
-int instruction::getBusC() const {
-    return busC;
+REGISTER instruction::getBusC() const {
+    return (REGISTER)busC;
 }
 
-void instruction::setBusC(int newBusC) {
+void instruction::setBusC(REGISTER newBusC) {
     instruction::busC = newBusC;
 }
 
-int instruction::getBusB() const {
-    return busB;
+REGISTER instruction::getBusB() const {
+    return (REGISTER)busB;
 }
 
-void instruction::setBusB(int newBusB) {
+void instruction::setBusB(REGISTER newBusB) {
     instruction::busB = newBusB;
 }
 
-int instruction::getBusA() const {
-    return busA;
+REGISTER instruction::getBusA() const {
+    return (REGISTER)busA;
 }
 
-void instruction::setBusA(int newBusA) {
+void instruction::setBusA(REGISTER newBusA) {
     instruction::busA = newBusA;
 }
 
