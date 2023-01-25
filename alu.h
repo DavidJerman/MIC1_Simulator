@@ -15,6 +15,15 @@ public:
 
     [[nodiscard]] bool getN() const;
 
+    void setA(word value);
+
+    void setB(word value);
+
+    void setOp(enum ALU newOp);
+
+    [[nodiscard]] word wordOut();
+
+private:
     word addOp(word a, word b);
 
     word andOp(word a, word b);
@@ -23,9 +32,11 @@ public:
 
     word negOp(word a);
 
-private:
     bool flagZ;
     bool flagN;
+    word A;
+    word B;
+    enum ALU op;
 };
 
 

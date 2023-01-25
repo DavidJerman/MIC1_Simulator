@@ -13,6 +13,7 @@
 #include "memory.h"
 #include "registers.h"
 #include "alu.h"
+#include "amux.h"
 
 class simulator {
 public:
@@ -45,6 +46,10 @@ private:
     memory _memory;
     registers _registers;
     alu _alu;
+
+    instruction _currentInstruction {};
+    int subCycle {0};
+    int cycle {0};
 };
 
 

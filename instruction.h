@@ -11,9 +11,15 @@
 
 class instruction {
 public:
-    instruction();
+    instruction() = default;
 
     explicit instruction(dword value);
+
+    // Copy constructor
+    instruction(const instruction& other);
+
+    // Move constructor
+    instruction(instruction&& other) noexcept;
 
     void setCode(dword value);
 

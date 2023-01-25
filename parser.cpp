@@ -181,7 +181,7 @@ instruction parser::parse(const std::string &input) {
 
                 if (instructionMarker[MARK::MC] || instructionMarker[MARK::MENC])
                 {
-                    std::cerr << "Error: cannot assign value to register again!" << std::endl;
+                    std::cerr << "Error: cannot assign _value to register again!" << std::endl;
                     instruction.invalidate();
                     break;
                 }
@@ -245,7 +245,7 @@ instruction parser::parse(const std::string &input) {
                 {
                     if (instructionMarker[MARK::MSH])
                     {
-                        std::cerr << "Error: cannot call shift again after shift!" << std::endl;
+                        std::cerr << "Error: cannot call _shift again after _shift!" << std::endl;
                         instruction.invalidate();
                         break;
                     }
@@ -268,7 +268,7 @@ instruction parser::parse(const std::string &input) {
                 {
                     if (instructionMarker[MARK::MSH])
                     {
-                        std::cerr << "Error: cannot call shift again after shift!" << std::endl;
+                        std::cerr << "Error: cannot call _shift again after _shift!" << std::endl;
                         instruction.invalidate();
                         break;
                     }

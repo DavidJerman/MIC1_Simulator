@@ -42,3 +42,30 @@ word alu::negOp(word a) {
     flagN = (result & 0x8000) != 0;
     return result;
 }
+
+void alu::setA(word value) {
+    A = value;
+}
+
+void alu::setB(word value) {
+    B = value;
+}
+
+void alu::setOp(enum ALU newOp) {
+    op = newOp;
+}
+
+word alu::wordOut() {
+    switch (op) {
+        case ALU::A_PLUS_B:
+            return addOp(A, B);
+        case ALU::A_AND_B:
+            return andOp(A, B);
+        case ALU::POS_A:
+            return posOp(A);
+        case ALU::NEG_A:
+            return negOp(A);
+        default:
+            return 0;
+    }
+}

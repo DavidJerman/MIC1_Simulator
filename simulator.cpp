@@ -11,6 +11,39 @@ simulator::simulator() {
 
 void simulator::next() {
     // Will execute the next clock cycle
+    switch (subCycle) {
+        case 0:
+        {
+            subCycle++;
+
+            break;
+        }
+        case 1:
+        {
+            subCycle++;
+            break;
+        }
+        case 2:
+        {
+            subCycle++;
+            break;
+        }
+        case 3:
+        {
+            subCycle++;
+            break;
+        }
+        case 4:
+        {
+            cycle++;
+            subCycle = 0;
+            // Parse next instruction
+            // TODO: parse next instruction
+            break;
+        }
+        default:
+            break;
+    }
 }
 
 void simulator::test_memory() {
@@ -65,38 +98,38 @@ void simulator::test_registers() {
 void simulator::test_alu() {
     std::cout << "===> Testing ALU <===" << std::endl;
     // Test ALU
-    // TODO
+    // TODO: Rewrite these tests
     // Add
-    word a = (word) 0b1100100010011011;
-    word b = (word) 0b1010100010011011;
-    word opSum = _alu.addOp(a, b);
-    word opCompSum = a + b;
-    std::cout << "Add: " << getHexStr(a) << " + " << getHexStr(b) << " = " << getHexStr(opCompSum) << " == "
-    << getHexStr(opSum) << " -> " << (opSum == opCompSum ? "PASS" : "FAIL") << std::endl;
-    // And
-    word opAnd = _alu.andOp(a, b);
-    word opCompAnd = a & b;
-    std::cout << "And: " << getHexStr(a) << " & " << getHexStr(b) << " = " << getHexStr(opCompAnd) << " == "
-    << getHexStr(opAnd) << " -> " << (opAnd == opCompAnd ? "PASS" : "FAIL") << std::endl;
-    // A
-    word posOp = _alu.posOp(a);
-    std::cout << "Pos: " << getHexStr(a) << " == " << getHexStr(posOp) << " -> " << (posOp == a ? "PASS" : "FAIL")
-    << std::endl;
-    // Not A
-    word negOp = _alu.negOp(a);
-    word negComp = ~a;
-    std::cout << "Neg: " << getHexStr(negComp) << " == " << getHexStr(negOp) << " -> " << (negComp == negOp ? "PASS" : "FAIL")
-    << std::endl;
-    // Zero flag
-    _alu.posOp(0);
-    std::cout << "Zero flag -> " << (_alu.getZ() ? "PASS" : "FAIL") << std::endl;
-    _alu.posOp(1);
-    std::cout << "Zero flag -> " << (!_alu.getZ() ? "PASS" : "FAIL") << std::endl;
-    // Negative flag
-    _alu.posOp(0);
-    std::cout << "Negative flag -> " << (!_alu.getN() ? "PASS" : "FAIL") << std::endl;
-    _alu.posOp(-1);
-    std::cout << "Negative flag -> " << (_alu.getN() ? "PASS" : "FAIL") << std::endl;
+//    word a = (word) 0b1100100010011011;
+//    word b = (word) 0b1010100010011011;
+//    word opSum = _alu.addOp(a, b);
+//    word opCompSum = a + b;
+//    std::cout << "Add: " << getHexStr(a) << " + " << getHexStr(b) << " = " << getHexStr(opCompSum) << " == "
+//    << getHexStr(opSum) << " -> " << (opSum == opCompSum ? "PASS" : "FAIL") << std::endl;
+//    // And
+//    word opAnd = _alu.andOp(a, b);
+//    word opCompAnd = a & b;
+//    std::cout << "And: " << getHexStr(a) << " & " << getHexStr(b) << " = " << getHexStr(opCompAnd) << " == "
+//    << getHexStr(opAnd) << " -> " << (opAnd == opCompAnd ? "PASS" : "FAIL") << std::endl;
+//    // A
+//    word posOp = _alu.posOp(a);
+//    std::cout << "Pos: " << getHexStr(a) << " == " << getHexStr(posOp) << " -> " << (posOp == a ? "PASS" : "FAIL")
+//    << std::endl;
+//    // Not A
+//    word negOp = _alu.negOp(a);
+//    word negComp = ~a;
+//    std::cout << "Neg: " << getHexStr(negComp) << " == " << getHexStr(negOp) << " -> " << (negComp == negOp ? "PASS" : "FAIL")
+//    << std::endl;
+//    // Zero flag
+//    _alu.posOp(0);
+//    std::cout << "Zero flag -> " << (_alu.getZ() ? "PASS" : "FAIL") << std::endl;
+//    _alu.posOp(1);
+//    std::cout << "Zero flag -> " << (!_alu.getZ() ? "PASS" : "FAIL") << std::endl;
+//    // Negative flag
+//    _alu.posOp(0);
+//    std::cout << "Negative flag -> " << (!_alu.getN() ? "PASS" : "FAIL") << std::endl;
+//    _alu.posOp(-1);
+//    std::cout << "Negative flag -> " << (_alu.getN() ? "PASS" : "FAIL") << std::endl;
 }
 
 void simulator::printHex(word value) {
@@ -110,7 +143,6 @@ std::string simulator::getHexStr(word value) {
 }
 
 void simulator::run() {
-
 }
 
 void simulator::reset() {

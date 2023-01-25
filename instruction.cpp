@@ -183,3 +183,11 @@ std::string instruction::toString() const {
     ss << "Address: " << "0x" << std::hex << (int) address << std::endl;
     return ss.str();
 }
+
+instruction::instruction(const instruction &other) {
+    setCode(other.getCode());
+}
+
+instruction::instruction(instruction &&other) noexcept {
+    setCode(other.getCode());
+}
