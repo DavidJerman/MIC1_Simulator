@@ -1,8 +1,10 @@
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 3.24)
 project(HOMicSim)
 
 # Copy program.mp to build directory
-configure_file(program.mp program.mp COPYONLY)
+file(COPY program.mp DESTINATION ${CMAKE_BINARY_DIR})
+# Copy all assets
+file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -15,7 +17,8 @@ set(CPP_SOURCE_FILES
         instruction.cpp
         parser.cpp
         amux.cpp
-        shifter.cpp)
+        shifter.cpp
+        gui.cpp)
 
 set(CPP_HEADER_FILES
         alu.h
@@ -30,6 +33,32 @@ set(CPP_HEADER_FILES
         tests/run_tests.h
         tests/test_simulator.h
         amux.h
-        shifter.h)
+        shifter.h
+        olcPixelGameEngine.h
+        gui.h
+        simulatorSprite.h)
 
-add_executable(HOMicSim ${CPP_SOURCE_FILES} ${CPP_HEADER_FILES})
+# Set linker libraries for Windows
+set(LINKER_LIBRARIES_WINDOWS
+        user32
+        gdi32
+        opengl32
+        gdiplus
+        Shlwapi
+        dwmapi)
+
+# Set linker libraries for Linux
+set(LINKER_LIBRARIES_LINUX
+        X11
+        GL
+        pthread
+        png
+        stdc++fs)
+
+if(WIN32)
+    add_executable(HOMicSim ${CPP_SOURCE_FILES} ${CPP_HEADER_FILES})
+    target_link_libraries(HOMicSim ${LINKER_LIBRARIES_WINDOWS})
+elseif(UNIX)
+    add_executable(HOMicSim ${CPP_SOURCE_FILES} ${CPP_HEADER_FILES})
+    target_link_libraries(HOMicSim ${LINKER_LIBRARIES_LINUX})
+endif()

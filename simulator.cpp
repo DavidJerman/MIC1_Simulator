@@ -213,3 +213,11 @@ void simulator::parse(const std::string& input) {
         std::cout << "Running instruction: " << std::endl << instruction.toString() << std::endl;
     }
 }
+
+const instruction &simulator::getCurrentInstruction() const {
+    return _currentInstruction;
+}
+
+void simulator::setCurrentInstruction(const instruction &currentInstruction) {
+    _currentInstruction = currentInstruction;
+}

@@ -14,7 +14,15 @@ int main() {
     // run_tests();
 
     parser p;
+    simulator sim;
     auto instructions = p.parseFile("program.mp");
+
+    for (auto &i : instructions) {
+        sim.setCurrentInstruction(i);
+        for (int j = 0; j < 4; j++) {
+            sim.next();
+        }
+    }
 
     return 0;
 }
