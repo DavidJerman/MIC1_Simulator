@@ -19,6 +19,8 @@ public:
 
     [[nodiscard]] word wordOut() const;
 
+    void reset();
+
 private:
     word a;
     word mbr;

@@ -45,12 +45,12 @@ void simulator::next() {
             // Latches are simulated via this cycle - there is no independent latch component
 
             // Amux
-            _amux.setA(_registers.getA());
+            _amux.setA(_registers.getAValue());
             _amux.setMBR(_memory.getMbr());
 
             // Alu
             _alu.setA(_amux.wordOut());
-            _alu.setB(_registers.getB());
+            _alu.setB(_registers.getBValue());
 
             // Shifter
             _shifter.wordIn(_alu.wordOut());
@@ -73,19 +73,12 @@ void simulator::next() {
         }
         case 3:
         {
-            subCycle++;
+            subCycle = 0;
+            cycle++;
 
             // Registers
             _registers.setValue(_shifter.wordOut());
 
-            break;
-        }
-        case 4:
-        {
-            cycle++;
-            subCycle = 0;
-            // Parse next instruction
-            // TODO: parseLine next instruction
             break;
         }
         default:
@@ -196,6 +189,13 @@ void simulator::run() {
 void simulator::reset() {
     _memory.reset();
     _registers.reset();
+    _alu.reset();
+    _currentInstruction = instruction();
+    _amux.reset();
+    _shifter.reset();
+    _jumpAddress = 0;
+    cycle = 0;
+    subCycle = 0;
 }
 
 void simulator::run_tests() {

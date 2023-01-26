@@ -6,13 +6,21 @@
 
 registers::registers()
         : _enc(ACTIVATE::NO), _a(REGISTER::PC), _b(REGISTER::PC), _c(REGISTER::PC) {
-    for (unsigned short &i: reg)
-        i = 0;
+    reset();
 }
 
 void registers::reset() {
     for (unsigned short &i: reg)
         i = 0;
+    reg[REGISTER::N1] = 0xFFFF;
+    reg[REGISTER::P1] = 0x0001;
+    reg[REGISTER::Z] = 0x0000;
+    reg[REGISTER::AMASK] = 0x0FFF;
+    reg[REGISTER::SMASK] = 0x00FF;
+    _a = REGISTER::PC;
+    _b = REGISTER::PC;
+    _c = REGISTER::PC;
+    _enc = ACTIVATE::NO;
 }
 
 ACTIVATE registers::getEnc() const {
@@ -48,6 +56,9 @@ void registers::setC(REGISTER c) {
 }
 
 void registers::setValue(word value) {
+    // Warning: This is a hack to prevent the user from writing to the N1, P1, Z, AMASK, and SMASK registers.
+    if (_c == REGISTER::N1 || _c == REGISTER::P1 || _c == REGISTER::Z || _c == REGISTER::AMASK || _c == REGISTER::SMASK)
+        return;
     if (_enc == ACTIVATE::YES)
         reg[_c] = value;
 }

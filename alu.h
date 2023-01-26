@@ -23,6 +23,8 @@ public:
 
     [[nodiscard]] word wordOut();
 
+    void reset();
+
 private:
     word addOp(word a, word b);
 

@@ -19,3 +19,9 @@ void amux::set(AMUX newSel) {
 word amux::wordOut() const {
     return sel == AMUX::MBR_LATCH ? mbr : a;
 }
+
+void amux::reset() {
+    a = 0;
+    mbr = 0;
+    sel = AMUX::A_LATCH;
+}

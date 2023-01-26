@@ -69,3 +69,11 @@ word alu::wordOut() {
             return 0;
     }
 }
+
+void alu::reset() {
+    flagZ = false;
+    flagN = false;
+    A = 0;
+    B = 0;
+    op = ALU::A_PLUS_B;
+}

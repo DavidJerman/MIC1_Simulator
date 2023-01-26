@@ -13,6 +13,8 @@ memory::memory() {
 memory::~memory() = default;
 
 void memory::read() {
+    if (!_read)
+        return;
     if (_ioState == IO_STATE::BUSY) {
         if (_ioMode != IO_MODE::READ) {
             throw memory_bus_exception();
@@ -29,6 +31,8 @@ void memory::read() {
 }
 
 void memory::write() {
+    if (!_write)
+        return;
     if (_ioState == IO_STATE::BUSY) {
         if (_ioMode != IO_MODE::WRITE) {
             throw memory_bus_exception();
@@ -63,10 +67,14 @@ word memory::getMbr() const {
 }
 
 void memory::setMbr(word mbr) {
+    if (!_setMbr)
+        return;
     this->_mbr = mbr;
 }
 
 void memory::setMar(word mar) {
+    if (!_setMar)
+        return;
     if (_ioState == IO_STATE::BUSY) {
         throw memory_bus_exception();
     }
@@ -79,6 +87,10 @@ void memory::reset() {
     _mbr = 0;
     _ioState = IO_STATE::READY;
     _ioMode = IO_MODE::READ;
+    _setMar = ACTIVATE::NO;
+    _setMbr = ACTIVATE::NO;
+    _read = ACTIVATE::NO;
+    _write = ACTIVATE::NO;
 }
 
 ACTIVATE memory::getSetMar() const {

@@ -17,6 +17,8 @@ public:
 
     word wordOut();
 
+    void reset();
+
 private:
     word _value;
     enum SH _shift;

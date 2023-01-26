@@ -41,6 +41,8 @@ instruction parser::parseLine(const std::string &input) {
 
     while (std::getline(lineStream, nextLine, ';')) {
         nextLine = trim(nextLine);
+        if (nextLine[0] == '#')
+            return instruction;
         // Case 2.
         instructionStream.clear();
         instructionStream.str(nextLine);

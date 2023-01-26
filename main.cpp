@@ -15,14 +15,35 @@ int main() {
 
     parser p;
     simulator sim;
+    sim.reset();
     auto instructions = p.parseFile("program.mp");
 
-    for (auto &i : instructions) {
-        sim.setCurrentInstruction(i);
-        for (int j = 0; j < 4; j++) {
-            sim.next();
+    try {
+        for (auto &i : instructions) {
+            sim.setCurrentInstruction(i);
+            for (int j = 0; j < 4; j++) {
+                sim.next();
+            }
         }
+    } catch (std::exception &e) {
+        std::cout << "Caught exception: " << e.what() << std::endl;
     }
+
+    sim.reset();
+    instructions = p.parseFile("program2.mp");
+    try {
+        for (auto &i : instructions) {
+            [&](){
+                sim.setCurrentInstruction(i);
+                for (int j = 0; j < 4; j++) {
+                    sim.next();
+                }
+            }();
+        }
+    } catch (std::exception &e) {
+        std::cout << "Caught exception: " << e.what() << std::endl;
+    }
+
 
     return 0;
 }

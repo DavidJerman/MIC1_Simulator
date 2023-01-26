@@ -186,10 +186,14 @@ std::string instruction::toString() const {
 
 instruction::instruction(const instruction &other) {
     setCode(other.getCode());
+    valid = other.isValid();
+    ID = other.getId();
 }
 
 instruction::instruction(instruction &&other) noexcept {
     setCode(other.getCode());
+    valid = other.isValid();
+    ID = other.getId();
 }
 
 unsigned int instruction::getId() const {
@@ -202,5 +206,7 @@ void instruction::setId(unsigned int id) {
 
 instruction &instruction::operator=(const instruction &other) {
     setCode(other.getCode());
+    valid = other.isValid();
+    ID = other.getId();
     return *this;
 }

@@ -28,3 +28,8 @@ word shifter::wordOut() {
             return 0;
     }
 }
+
+void shifter::reset() {
+    _value = 0;
+    _shift = SH::NO_SHIFT;
+}
