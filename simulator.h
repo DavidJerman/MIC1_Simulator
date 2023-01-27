@@ -34,6 +34,11 @@ public:
 
     void setInstructions(const std::vector<instruction> &instructions);
 
+    // Dangerous functions
+    void setMemoryCell(word address, word value);
+
+    word getMemoryCell(word address);
+
     // Testing
     void run_tests();
 

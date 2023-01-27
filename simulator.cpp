@@ -253,3 +253,11 @@ void simulator::setCurrentInstruction(const instruction &currentInstruction) {
 void simulator::setInstructions(const std::vector<instruction> &instructions) {
     _instructions = instructions;
 }
+
+void simulator::setMemoryCell(word address, word value) {
+    _memory.write_word(address, value);
+}
+
+word simulator::getMemoryCell(word address) {
+    return _memory.read_word(address);
+}

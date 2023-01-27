@@ -38,10 +38,12 @@ public:
 
     void setWr(ACTIVATE write);
 
-private:
+    // Warning: This function is dangerous - they should be only used for debugging
     word read_word(word address);
+
     void write_word(word address, word value);
 
+private:
     // Memory is 4K
     word _mem[MEM_SIZE]{};
 
