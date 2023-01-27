@@ -1,0 +1,10 @@
+0:  a := lshift(1 + 1);
+1:  b := lshift(1 + 1);
+2:  c := a + b;
+3:  mar := 0; mbr := c; wr;
+4:  wr;
+5:  rd;
+6:  rd;
+7:  d := mbr;
+8:  d := inv(d);
+9:  goto 0;

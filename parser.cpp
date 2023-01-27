@@ -15,6 +15,7 @@ instruction parser::parseLine(const std::string &input) {
     // Covert to an instruction
     // Bits for checking if the property of an instruction has already been set
     bool instructionMarker[13]{false};
+    bool fixedBusOrder = false;
 
     // 1.1) resReg := leftReg + rightReg;
     // 1.2) resReg := leftReg;
@@ -215,7 +216,7 @@ instruction parser::parseLine(const std::string &input) {
                     }
                     if (instructionMarker[MARK::MB] && instruction.getBusB() != reg)
                     {
-                        std::cerr << "Error: bus B error!" << std::endl;
+                        std::cerr << "Error: bus B error! Make sure the register used with mar assignment appears on the right in any other assignment!" << std::endl;
                         instruction.invalidate();
                         break;
                     }
@@ -358,8 +359,8 @@ void parser::initRegisterTable() {
     registerTable.insert({"d", REGISTER::D});
     registerTable.insert({"e", REGISTER::E});
     registerTable.insert({"f", REGISTER::F});
-    registerTable.insert({"_mar", REGISTER::MAR});
-    registerTable.insert({"_mbr", REGISTER::MBR});
+    registerTable.insert({"mar", REGISTER::MAR});
+    registerTable.insert({"mbr", REGISTER::MBR});
     registerTable.insert({"alu", REGISTER::ALU});
 }
 
@@ -392,13 +393,21 @@ bool parser::arithmetic(instruction &instruction, bool *instructionMarker, const
             return false;
         }
         auto reg = toRegister(token.substr(4, token.length() - 5));
-        if (reg == INVALID)
+        if (reg == INVALID || reg == REGISTER::MAR)
         {
             std::cerr << "Error: invalid register!" << std::endl;
             instruction.invalidate();
             return false;
         }
-        setA(instruction, instructionMarker, reg);
+        if (reg == REGISTER::MBR)
+        {
+            instruction.setAmux(AMUX::MBR_LATCH);
+        }
+        else
+        {
+            setA(instruction, instructionMarker, reg);
+            instruction.setAmux(AMUX::A_LATCH);
+        }
         if (!instructionStream.eof())
         {
             std::cerr << "Error: invalid instruction!" << std::endl;
@@ -416,18 +425,26 @@ bool parser::arithmetic(instruction &instruction, bool *instructionMarker, const
             return false;
         }
         auto regLeft = toRegister(token.substr(5, token.length() - 6));
-        if (regLeft == INVALID)
+        if (regLeft == INVALID || regLeft == REGISTER::MAR)
         {
             std::cerr << "Error: invalid register!" << std::endl;
             instruction.invalidate();
             return false;
         }
-        setA(instruction, instructionMarker, regLeft);
+        if (regLeft == REGISTER::MBR)
+        {
+            instruction.setAmux(AMUX::MBR_LATCH);
+        }
+        else
+        {
+            setA(instruction, instructionMarker, regLeft);
+            instruction.setAmux(AMUX::A_LATCH);
+        }
         std::getline(instructionStream, token, ' ');
         auto regRight = toRegister(token.substr(0, token.length() - 1));
-        if (regRight == INVALID)
+        if (regRight == INVALID || regRight == REGISTER::MAR || regRight == REGISTER::MBR)
         {
-            std::cerr << "Error: invalid register!" << std::endl;
+            std::cerr << "Error: invalid register or mar/mbr was used (mbr should be used as the first parameter in assignment)!" << std::endl;
             instruction.invalidate();
             return false;
         }
@@ -460,11 +477,15 @@ bool parser::arithmeticPlus(instruction &instruction, bool *instructionMarker, c
     std::string token;
     std::getline(expressionStream, token, ' ');
     auto leftReg = toRegister(token);
-    if (leftReg == INVALID)
+    if (leftReg == INVALID || leftReg == REGISTER::MAR)
     {
         std::cerr << "Error: invalid register!" << std::endl;
         instruction.invalidate();
         return false;
+    }
+    if (leftReg == REGISTER::MBR)
+    {
+        instruction.setAmux(AMUX::MBR_LATCH);
     }
     else
     {
@@ -473,6 +494,7 @@ bool parser::arithmeticPlus(instruction &instruction, bool *instructionMarker, c
         {
             return false;
         }
+        instruction.setAmux(AMUX::A_LATCH);
     }
     // End if there is no additional operation
     if (expressionStream.eof())
@@ -494,7 +516,7 @@ bool parser::arithmeticPlus(instruction &instruction, bool *instructionMarker, c
     }
     std::getline(expressionStream, token, ' ');
     auto rightReg = toRegister(token);
-    if (rightReg == INVALID)
+    if (rightReg == INVALID || rightReg == REGISTER::MAR || rightReg == REGISTER::MBR)
     {
         std::cerr << "Error: invalid register!" << std::endl;
         instruction.invalidate();

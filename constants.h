@@ -128,4 +128,9 @@ enum MARK {
     MADDR
 };
 
+struct JMP {
+    byte address;
+    COND cond;
+};
+
 #endif //HOMICSIM_CONSTANTS_H

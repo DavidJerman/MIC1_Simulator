@@ -20,7 +20,7 @@ class simulator {
 public:
     simulator();
 
-    void next();
+    bool next();
 
     void run();
 
@@ -31,6 +31,8 @@ public:
     [[nodiscard]] const instruction &getCurrentInstruction() const;
 
     void setCurrentInstruction(const instruction &currentInstruction);
+
+    void setInstructions(const std::vector<instruction> &instructions);
 
     // Testing
     void run_tests();
@@ -54,10 +56,12 @@ private:
     amux _amux;
     shifter _shifter;
 
-    byte _jumpAddress {0};
+    JMP jmp;
     instruction _currentInstruction {};
+    std::vector<instruction> _instructions {};
     int subCycle {0};
     int cycle {0};
+    byte _mpc {0};
 };
 
 

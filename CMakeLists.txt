@@ -4,6 +4,7 @@ project(HOMicSim)
 # Copy program.mp to build directory
 file(COPY program.mp DESTINATION ${CMAKE_BINARY_DIR})
 file(COPY program2.mp DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY program3.mp DESTINATION ${CMAKE_BINARY_DIR})
 # Copy all assets
 file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})
 

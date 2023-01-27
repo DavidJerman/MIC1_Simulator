@@ -12,12 +12,17 @@ simulator::simulator() {
     _shifter = shifter();
 }
 
-void simulator::next() {
+bool simulator::next() {
     // Will execute the next clock cycle
     switch (subCycle) {
         case 0:
         {
             subCycle++;
+
+            if (_mpc >= _instructions.size()) {
+                return false;
+            }
+            _currentInstruction = _instructions[_mpc];
 
             // First cycle sets all components' properties according to the current instruction
             _amux.set(_currentInstruction.getAmux());
@@ -32,10 +37,9 @@ void simulator::next() {
             _registers.setA(_currentInstruction.getBusA());
             _registers.setB(_currentInstruction.getBusB());
             _registers.setC(_currentInstruction.getBusC());
-            if (_currentInstruction.getCond() == COND::JUMP)
-                _jumpAddress = _currentInstruction.getAddress();
-            // TODO: How should I deal with cond?
-
+            if (_currentInstruction.getCond() != COND::NO_JUMP)
+                jmp.address = _currentInstruction.getAddress();
+            jmp.cond = _currentInstruction.getCond();
             break;
         }
         case 1:
@@ -57,7 +61,7 @@ void simulator::next() {
 
             // Memory
             _memory.setMbr(_shifter.wordOut());
-            _memory.setMar(_registers.getA());
+            _memory.setMar(_registers.getBValue());
 
             break;
         }
@@ -79,11 +83,34 @@ void simulator::next() {
             // Registers
             _registers.setValue(_shifter.wordOut());
 
+            // Jump if necessary
+            switch (jmp.cond) {
+                case COND::JUMP:
+                    _mpc = jmp.address;
+                    break;
+                case COND::Z_JUMP:
+                    if (_alu.getZ())
+                        _mpc = jmp.address;
+                    else
+                        _mpc++;
+                    break;
+                case COND::N_JUMP:
+                    if (_alu.getN())
+                        _mpc = jmp.address;
+                    else
+                        _mpc++;
+                    break;
+                default:
+                    _mpc++;
+                    break;
+            }
+
             break;
         }
         default:
             break;
     }
+    return true;
 }
 
 void simulator::test_memory() {
@@ -193,7 +220,8 @@ void simulator::reset() {
     _currentInstruction = instruction();
     _amux.reset();
     _shifter.reset();
-    _jumpAddress = 0;
+    jmp.address = 0;
+    jmp.cond = COND::NO_JUMP;
     cycle = 0;
     subCycle = 0;
 }
@@ -220,4 +248,8 @@ const instruction &simulator::getCurrentInstruction() const {
 
 void simulator::setCurrentInstruction(const instruction &currentInstruction) {
     _currentInstruction = currentInstruction;
+}
+
+void simulator::setInstructions(const std::vector<instruction> &instructions) {
+    _instructions = instructions;
 }
