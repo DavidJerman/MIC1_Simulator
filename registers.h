@@ -6,6 +6,7 @@
 #define HOMICSIM_REGISTERS_H
 
 #include "constants.h"
+#include <string>
 
 class registers {
 public:

@@ -498,21 +498,21 @@ namespace PARSE_TEST {
         std::cout << "  <T> MBR" << std::endl;
         bool success = true;
         // _mbr := a; c := d;   --> should be invalid
-        std::string resReg = "_mbr";
+        std::string resReg = "mbr";
         std::string reg = "a";
         std::string input = resReg + " := " + reg + "; c := d;";
         instruction i = p.parseLine(input);
         if (i.isValid())
             success = false;
         // _mbr := a;   --> should be valid
-        resReg = "_mbr";
+        resReg = "mbr";
         reg = "a";
         input = resReg + " := " + reg + ";";
         i = p.parseLine(input);
         if (!i.isValid())
             success = false;
         // _mbr := a; c := a;   --> should be valid
-        resReg = "_mbr";
+        resReg = "mbr";
         reg = "a";
         input = resReg + " := " + reg + "; c := a;";
         i = p.parseLine(input);
@@ -525,7 +525,7 @@ namespace PARSE_TEST {
     {
         std::cout << "  <T> MAR" << std::endl;
         // _mar := c;
-        std::string resReg = "_mar";
+        std::string resReg = "mar";
         std::string reg = "c";
         std::string input = resReg + " := " + reg + ";";
         instruction i = p.parseLine(input);
@@ -537,7 +537,7 @@ namespace PARSE_TEST {
         if (code != correctCode)
             return false;
         // _mar := c; b := a + c;   --> should be valid
-        resReg = "_mar";
+        resReg = "mar";
         reg = "c";
         std::string reg2 = "a";
         input = resReg + " := " + reg + "; b := " + reg2 + " + " + reg + ";";
@@ -545,7 +545,7 @@ namespace PARSE_TEST {
         if (!i.isValid())
             return false;
         // _mar := c; b := b + d;   --> should be invalid
-        resReg = "_mar";
+        resReg = "mar";
         reg = "c";
         reg2 = "b";
         input = resReg + " := " + reg + "; b := " + reg2 + " + d;";
