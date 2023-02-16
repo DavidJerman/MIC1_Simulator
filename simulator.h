@@ -48,10 +48,19 @@ public:
 
     void test_alu();
 
+    // Visualization
+    void printState();
+
+    void printMemory(word start, word end = 0);
+
+    void printRegisters();
+
+    void printInstruction();
+
 private:
     static void printHex(word value);
 
-    static std::string getHexStr(word value);
+    static std::string getHexStr(word value, int width = 4);
 
     parser _parser;
 

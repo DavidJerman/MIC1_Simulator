@@ -1,12 +1,12 @@
 #include <iostream>
-
 #include "simulator.h"
-#include "tests/run_tests.h"
 
-int main() {
-    std::cout << "MIC-1 Simulator" << std::endl;
-    // Test
-    run_tests();
+/**
+ * This example test code.
+ */
+
+//    Test
+//    run_tests();
 
 //    parser p;
 //    simulator sim;
@@ -58,6 +58,14 @@ int main() {
 //    while (sim.next()) ;
 //    auto res = sim.getMemoryCell((word)19);
 //    std::cout << "Result: " << res << std::endl;
+
+int main() {
+    std::cout << "MIC-1 Simulator" << std::endl;
+
+    simulator sim;
+    sim.reset();
+    std::vector<instruction> instructions;
+    parser p;
 
     return 0;
 }

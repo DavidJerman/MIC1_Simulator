@@ -6,8 +6,6 @@ file(COPY program.mp DESTINATION ${CMAKE_BINARY_DIR})
 file(COPY program2.mp DESTINATION ${CMAKE_BINARY_DIR})
 file(COPY program3.mp DESTINATION ${CMAKE_BINARY_DIR})
 file(COPY SUMOFN.MP DESTINATION ${CMAKE_BINARY_DIR})
-# Copy all assets
-file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -20,8 +18,7 @@ set(CPP_SOURCE_FILES
         instruction.cpp
         parser.cpp
         amux.cpp
-        shifter.cpp
-        gui.cpp)
+        shifter.cpp)
 
 set(CPP_HEADER_FILES
         alu.h
@@ -36,10 +33,7 @@ set(CPP_HEADER_FILES
         tests/run_tests.h
         tests/test_simulator.h
         amux.h
-        shifter.h
-        olcPixelGameEngine.h
-        gui.h
-        simulatorSprite.h)
+        shifter.h)
 
 # Set linker libraries for Windows
 set(LINKER_LIBRARIES_WINDOWS

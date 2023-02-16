@@ -7,6 +7,7 @@
 
 #include "constants.h"
 #include <string>
+#include <iostream>
 
 class registers {
 public:
@@ -35,6 +36,9 @@ public:
     [[nodiscard]] REGISTER getC() const;
 
     void setC(REGISTER c);
+
+    // Visualization
+    void printState();
 
 private:
     word reg[REG_SIZE]{};

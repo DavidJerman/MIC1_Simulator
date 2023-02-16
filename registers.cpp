@@ -70,3 +70,9 @@ word registers::getAValue() const {
 word registers::getBValue() const {
     return reg[_b];
 }
+
+void registers::printState() {
+    for (int i = 0; i < REG_SIZE; i++) {
+        std::cout << "R" << i << ": " << std::hex << reg[i] << std::endl;
+    }
+}

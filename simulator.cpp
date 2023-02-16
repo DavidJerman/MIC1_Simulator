@@ -2,6 +2,7 @@
 // Created by david on 1/8/2023.
 //
 
+#include <iomanip>
 #include "simulator.h"
 
 simulator::simulator() {
@@ -274,9 +275,9 @@ void simulator::printHex(word value) {
     std::cout << getHexStr(value) << std::endl;
 }
 
-std::string simulator::getHexStr(word value) {
+std::string simulator::getHexStr(word value, int width) {
     std::stringstream ss;
-    ss << "0x" << std::uppercase << std::hex << value;
+    ss << "0x" << std::setfill('0') << std::setw(width) << std::uppercase << std::hex << value;
     return ss.str();
 }
 
@@ -330,4 +331,44 @@ void simulator::setMemoryCell(word address, word value) {
 
 word simulator::getMemoryCell(word address) {
     return _memory.read_word(address);
+}
+
+void simulator::printState() {
+    std::cout << "Cycle: " << cycle << std::endl;
+    std::cout << "Sub cycle: " << subCycle << std::endl;
+    std::cout << "Current instruction: " << std::endl;
+    printInstruction();
+    std::cout << "Registers: " << std::endl;
+    printRegisters();
+    std::cout << "Memory: " << std::endl;
+    printMemory(0);
+}
+
+void simulator::printMemory(word start, word end) {
+    int base = 16;
+    start = (start / base);
+    if (end == 0)
+        end = start + 4;
+    else
+        end = ((end - 1) / base + 1);
+    std::cout << "        ";
+    for (int i = start; i < start + base; i++) {
+        std::cout << getHexStr(i, 4) << " ";
+    }
+    std::cout << std::endl;
+    for (int i = start; i < end; i++) {
+        std::cout << getHexStr(i * base) << ": ";
+        for (int j = 0; j < base; j++) {
+            std::cout << getHexStr(_memory.read_word(i * base + j)) << " ";
+        }
+        std::cout << std::endl;
+    }
+}
+
+void simulator::printRegisters() {
+    _registers.printState();
+}
+
+void simulator::printInstruction() {
+    std::cout << _currentInstruction.toString() << std::endl;
 }
