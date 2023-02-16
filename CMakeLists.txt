@@ -2,10 +2,10 @@ cmake_minimum_required(VERSION 3.24)
 project(HOMicSim)
 
 # Copy program.mp to build directory
-file(COPY program.mp DESTINATION ${CMAKE_BINARY_DIR})
-file(COPY program2.mp DESTINATION ${CMAKE_BINARY_DIR})
-file(COPY program3.mp DESTINATION ${CMAKE_BINARY_DIR})
-file(COPY SUMOFN.MP DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY programs/program.mp DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY programs/program2.mp DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY programs/program3.mp DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY programs/SUMOFN.MP DESTINATION ${CMAKE_BINARY_DIR})
 
 set(CMAKE_CXX_STANDARD 17)
 
