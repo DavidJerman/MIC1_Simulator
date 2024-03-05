@@ -2,8 +2,7 @@
 // Created by david on 1/21/2023.
 //
 
-#ifndef HOMICSIM_RUN_TESTS_H
-#define HOMICSIM_RUN_TESTS_H
+#pragma once
 
 #include "test_parser.h"
 #include "test_simulator.h"
@@ -27,6 +26,3 @@ void run_tests() {
     std::cout << "[x] Press any key to continue..." << std::endl;
     std::cin.get();
 }
-
-
-#endif //HOMICSIM_RUN_TESTS_H

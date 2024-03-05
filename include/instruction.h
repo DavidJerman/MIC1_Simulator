@@ -26,65 +26,65 @@ public:
 
     void setCode(dword value);
 
-    [[nodiscard]] dword getCode() const;
+    dword getCode() const;
 
-    [[nodiscard]] bool isValid() const;
+    bool isValid() const;
 
     void invalidate();
 
-    [[nodiscard]] enum AMUX getAmux() const;
+    enum AMUX getAmux() const;
 
     void setAmux(enum AMUX newAmux);
 
-    [[nodiscard]] enum COND getCond() const;
+    enum COND getCond() const;
 
     void setCond(enum COND newCond);
 
-    [[nodiscard]] enum ALU getAlu() const;
+    enum ALU getAlu() const;
 
     void setAlu(enum ALU newAlu);
 
-    [[nodiscard]] enum SH getSh() const;
+    enum SH getSh() const;
 
     void setSh(enum SH newSh);
 
-    [[nodiscard]] enum ACTIVATE getMbr() const;
+    enum ACTIVATE getMbr() const;
 
     void setMbr(enum ACTIVATE newMbr);
 
-    [[nodiscard]] enum ACTIVATE getMar() const;
+    enum ACTIVATE getMar() const;
 
     void setMar(enum ACTIVATE newMar);
 
-    [[nodiscard]] enum ACTIVATE getRd() const;
+    enum ACTIVATE getRd() const;
 
     void setRd(enum ACTIVATE newRd);
 
-    [[nodiscard]] enum ACTIVATE getWr() const;
+    enum ACTIVATE getWr() const;
 
     void setWr(enum ACTIVATE newWr);
 
-    [[nodiscard]] enum ACTIVATE getEnc() const;
+    enum ACTIVATE getEnc() const;
 
     void setEnc(enum ACTIVATE newEnc);
 
-    [[nodiscard]] REGISTER getBusC() const;
+    REGISTER getBusC() const;
 
     void setBusC(REGISTER newBusC);
 
-    [[nodiscard]] REGISTER getBusB() const;
+    REGISTER getBusB() const;
 
     void setBusB(REGISTER newBusB);
 
-    [[nodiscard]] REGISTER getBusA() const;
+    REGISTER getBusA() const;
 
     void setBusA(REGISTER newBusA);
 
-    [[nodiscard]] byte getAddress() const;
+    byte getAddress() const;
 
     void setAddress(byte newAddress);
 
-    [[nodiscard]] std::string toString() const;
+    std::string toString() const;
 
     unsigned int getId() const;
 

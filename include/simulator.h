@@ -28,7 +28,7 @@ public:
 
     void parse(const std::string& input);
 
-    [[nodiscard]] const instruction &getCurrentInstruction() const;
+    const instruction &getCurrentInstruction() const;
 
     void setCurrentInstruction(const instruction &currentInstruction);
 

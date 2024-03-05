@@ -17,7 +17,7 @@ public:
 
     void set(AMUX newSel);
 
-    [[nodiscard]] word wordOut() const;
+    word wordOut() const;
 
     void reset();
 

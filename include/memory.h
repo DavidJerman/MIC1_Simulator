@@ -16,25 +16,25 @@ public:
     void read();
     void write();
 
-    [[nodiscard]] word getMbr() const;
+    word getMbr() const;
     void setMbr(word mbr);
     void setMar(word mar);
 
     void reset();
 
-    [[nodiscard]] ACTIVATE getSetMar() const;
+    ACTIVATE getSetMar() const;
 
     void setSetMar(ACTIVATE setMar);
 
-    [[nodiscard]] ACTIVATE getSetMbr() const;
+    ACTIVATE getSetMbr() const;
 
     void setSetMbr(ACTIVATE setMbr);
 
-    [[nodiscard]] ACTIVATE getRead() const;
+    ACTIVATE getRead() const;
 
     void setRd(ACTIVATE read);
 
-    [[nodiscard]] ACTIVATE getWrite() const;
+    ACTIVATE getWrite() const;
 
     void setWr(ACTIVATE write);
 

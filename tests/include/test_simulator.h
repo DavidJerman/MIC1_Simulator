@@ -2,18 +2,20 @@
 // Created by pinkynyte on 1/23/23.
 //
 
-#ifndef HOMICSIM_TEST_SIMULATOR_H
-#define HOMICSIM_TEST_SIMULATOR_H
+#pragma once
 
 #include <iostream>
-#include "../parser.h"
+#include "parser.h"
+#include "simulator.h"
 
-namespace SIMULATOR_TEST {
+namespace SIMULATOR_TEST
+{
     // Prototypes
     bool run();
 
     // Implementation
-    bool run() {
+    bool run()
+    {
         std::cout << "Running simulator tests..." << std::endl;
 
         bool result = true;
@@ -31,5 +33,3 @@ namespace SIMULATOR_TEST {
         return result;
     }
 }
-
-#endif //HOMICSIM_TEST_SIMULATOR_H

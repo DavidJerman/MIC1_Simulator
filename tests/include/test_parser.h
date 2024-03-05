@@ -2,11 +2,10 @@
 // Created by david on 1/21/2023.
 //
 
-#ifndef HOMICSIM_TEST_PARSER_H
-#define HOMICSIM_TEST_PARSER_H
+#pragma once
 
 #include <iostream>
-#include "../parser.h"
+#include "parser.h"
 
 namespace PARSE_TEST {
     // Prototypes
@@ -561,5 +560,3 @@ namespace PARSE_TEST {
         return true;
     }
 }
-
-#endif //HOMICSIM_TEST_PARSER_H

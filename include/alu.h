@@ -11,9 +11,9 @@ class alu {
 public:
     alu();
 
-    [[nodiscard]] bool getZ() const;
+    bool getZ() const;
 
-    [[nodiscard]] bool getN() const;
+    bool getN() const;
 
     void setA(word value);
 
@@ -21,7 +21,7 @@ public:
 
     void setOp(enum ALU newOp);
 
-    [[nodiscard]] word wordOut();
+    word wordOut();
 
     void reset();
 

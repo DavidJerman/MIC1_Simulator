@@ -15,25 +15,25 @@ public:
 
     void setValue(word value);
 
-    [[nodiscard]] word getAValue() const;
+    word getAValue() const;
 
-    [[nodiscard]] word getBValue() const;
+    word getBValue() const;
 
     void reset();
 
-    [[nodiscard]] ACTIVATE getEnc() const;
+    ACTIVATE getEnc() const;
 
     void setEnc(ACTIVATE enc);
 
-    [[nodiscard]] REGISTER getA() const;
+    REGISTER getA() const;
 
     void setA(REGISTER a);
 
-    [[nodiscard]] REGISTER getB() const;
+    REGISTER getB() const;
 
     void setB(REGISTER b);
 
-    [[nodiscard]] REGISTER getC() const;
+    REGISTER getC() const;
 
     void setC(REGISTER c);
 
