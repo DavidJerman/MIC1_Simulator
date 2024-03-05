@@ -1,5 +1,6 @@
-cmake_minimum_required(VERSION 3.24)
-project(HOMicSim)
+cmake_minimum_required(VERSION 3.21)
+set(APP_NAME HOMicSim)
+project(${APP_NAME})
 
 # Copy program.mp to build directory
 file(COPY programs/program.mp DESTINATION ${CMAKE_BINARY_DIR})
@@ -7,33 +8,14 @@ file(COPY programs/program2.mp DESTINATION ${CMAKE_BINARY_DIR})
 file(COPY programs/program3.mp DESTINATION ${CMAKE_BINARY_DIR})
 file(COPY programs/SUMOFN.MP DESTINATION ${CMAKE_BINARY_DIR})
 
+# VS Structure
+file(GLOB_RECURSE SRC "src/*.cpp")
+file(GLOB_RECURSE INCLUDE "src/*.h")
+
+source_group("Header files" FILES ${INCLUDE})
+source_group("Source files" FILES ${SRC})
+
 set(CMAKE_CXX_STANDARD 17)
-
-set(CPP_SOURCE_FILES
-        alu.cpp
-        main.cpp
-        memory.cpp
-        registers.cpp
-        simulator.cpp
-        instruction.cpp
-        parser.cpp
-        amux.cpp
-        shifter.cpp)
-
-set(CPP_HEADER_FILES
-        alu.h
-        constants.h
-        exceptions.h
-        memory.h
-        registers.h
-        simulator.h
-        instruction.h
-        parser.h
-        tests/test_parser.h
-        tests/run_tests.h
-        tests/test_simulator.h
-        amux.h
-        shifter.h)
 
 # Set linker libraries for Windows
 set(LINKER_LIBRARIES_WINDOWS
@@ -53,9 +35,11 @@ set(LINKER_LIBRARIES_LINUX
         stdc++fs)
 
 if(WIN32)
-    add_executable(HOMicSim ${CPP_SOURCE_FILES} ${CPP_HEADER_FILES})
-    target_link_libraries(HOMicSim ${LINKER_LIBRARIES_WINDOWS})
+    add_executable(${APP_NAME} ${SRC} ${INCLUDE})
+    target_include_directories(${APP_NAME} PRIVATE include)
+    target_link_libraries(${APP_NAME} ${LINKER_LIBRARIES_WINDOWS})
 elseif(UNIX)
-    add_executable(HOMicSim ${CPP_SOURCE_FILES} ${CPP_HEADER_FILES})
-    target_link_libraries(HOMicSim ${LINKER_LIBRARIES_LINUX})
+    add_executable(${APP_NAME} ${SRC} ${INCLUDE})
+    target_include_directories(${APP_NAME} PRIVATE include)
+    target_link_libraries(${APP_NAME} ${LINKER_LIBRARIES_LINUX})
 endif()
