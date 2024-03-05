@@ -4,7 +4,8 @@
 
 #include "instruction.h"
 
-instruction::instruction() {
+instruction::instruction()
+{
     amux = 0;
     cond = 0;
     alu = 0;
@@ -21,12 +22,14 @@ instruction::instruction() {
     valid = true;
 }
 
-instruction::instruction(dword value) {
+instruction::instruction(dword value)
+{
     setCode(value);
 }
 
-void instruction::setCode(dword value) {
-    auto cast = (int) value;
+void instruction::setCode(dword value)
+{
+    auto cast = (int)value;
     address = (cast >> ADDRESS_SH) & 0xFF;
     busA = (cast >> BUS_A_SH) & 0XF;
     busB = (cast >> BUS_B_SH) & 0XF;
@@ -42,169 +45,211 @@ void instruction::setCode(dword value) {
     amux = (cast >> AMUX_SH) & 0X1;
 }
 
-dword instruction::getCode() const {
-    return (dword) (amux << AMUX_SH | cond << COND_SH | alu << ALU_SH | sh << SH_SH | mbr << MBR_SH | mar << MAR_SH |
-                    rd << RD_SH | wr << WR_SH | enc << ENC_SH | busC << BUS_C_SH | busB << BUS_B_SH | busA << BUS_A_SH |
-                    address << ADDRESS_SH);
+dword instruction::getCode() const
+{
+    return (dword)(amux << AMUX_SH | cond << COND_SH | alu << ALU_SH | sh << SH_SH | mbr << MBR_SH | mar << MAR_SH |
+                   rd << RD_SH | wr << WR_SH | enc << ENC_SH | busC << BUS_C_SH | busB << BUS_B_SH | busA << BUS_A_SH |
+                   address << ADDRESS_SH);
 }
 
-bool instruction::isValid() const {
+bool instruction::isValid() const
+{
     return valid;
 }
 
-void instruction::invalidate() {
+void instruction::invalidate()
+{
     valid = false;
 }
 
-enum AMUX instruction::getAmux() const {
+enum AMUX instruction::getAmux() const
+{
     return (enum AMUX)amux;
 }
 
-void instruction::setAmux(enum AMUX newAmux) {
+void instruction::setAmux(enum AMUX newAmux)
+{
     instruction::amux = newAmux;
 }
 
-enum COND instruction::getCond() const {
+enum COND instruction::getCond() const
+{
     return (enum COND)cond;
 }
 
-void instruction::setCond(enum COND newCond) {
+void instruction::setCond(enum COND newCond)
+{
     instruction::cond = newCond;
 }
 
-enum ALU instruction::getAlu() const {
+enum ALU instruction::getAlu() const
+{
     return (enum ALU)alu;
 }
 
-void instruction::setAlu(enum ALU newAlu) {
+void instruction::setAlu(enum ALU newAlu)
+{
     instruction::alu = newAlu;
 }
 
-enum SH instruction::getSh() const {
+enum SH instruction::getSh() const
+{
     return (enum SH)sh;
 }
 
-void instruction::setSh(enum SH newSh) {
+void instruction::setSh(enum SH newSh)
+{
     instruction::sh = newSh;
 }
 
-enum ACTIVATE instruction::getMbr() const {
+enum ACTIVATE instruction::getMbr() const
+{
     return (enum ACTIVATE)mbr;
 }
 
-void instruction::setMbr(enum ACTIVATE newMbr) {
+void instruction::setMbr(enum ACTIVATE newMbr)
+{
     instruction::mbr = newMbr;
 }
 
-enum ACTIVATE instruction::getMar() const {
+enum ACTIVATE instruction::getMar() const
+{
     return (enum ACTIVATE)mar;
 }
 
-void instruction::setMar(enum ACTIVATE newMar) {
+void instruction::setMar(enum ACTIVATE newMar)
+{
     instruction::mar = newMar;
 }
 
-enum ACTIVATE instruction::getRd() const {
+enum ACTIVATE instruction::getRd() const
+{
     return (enum ACTIVATE)rd;
 }
 
-void instruction::setRd(enum ACTIVATE newRd) {
+void instruction::setRd(enum ACTIVATE newRd)
+{
     instruction::rd = newRd;
 }
 
-enum ACTIVATE instruction::getWr() const {
+enum ACTIVATE instruction::getWr() const
+{
     return (enum ACTIVATE)wr;
 }
 
-void instruction::setWr(enum ACTIVATE newWr) {
+void instruction::setWr(enum ACTIVATE newWr)
+{
     instruction::wr = newWr;
 }
 
-enum ACTIVATE instruction::getEnc() const {
+enum ACTIVATE instruction::getEnc() const
+{
     return (enum ACTIVATE)enc;
 }
 
-void instruction::setEnc(enum ACTIVATE newEnc) {
+void instruction::setEnc(enum ACTIVATE newEnc)
+{
     instruction::enc = newEnc;
 }
 
-REGISTER instruction::getBusC() const {
+REGISTER instruction::getBusC() const
+{
     return (REGISTER)busC;
 }
 
-void instruction::setBusC(REGISTER newBusC) {
+void instruction::setBusC(REGISTER newBusC)
+{
     instruction::busC = newBusC;
 }
 
-REGISTER instruction::getBusB() const {
+REGISTER instruction::getBusB() const
+{
     return (REGISTER)busB;
 }
 
-void instruction::setBusB(REGISTER newBusB) {
+void instruction::setBusB(REGISTER newBusB)
+{
     instruction::busB = newBusB;
 }
 
-REGISTER instruction::getBusA() const {
+REGISTER instruction::getBusA() const
+{
     return (REGISTER)busA;
 }
 
-void instruction::setBusA(REGISTER newBusA) {
+void instruction::setBusA(REGISTER newBusA)
+{
     instruction::busA = newBusA;
 }
 
-byte instruction::getAddress() const {
+byte instruction::getAddress() const
+{
     return address;
 }
 
-void instruction::setAddress(byte newAddress) {
+void instruction::setAddress(byte newAddress)
+{
     instruction::address = newAddress;
 }
 
-std::string instruction::toString() const {
+std::string instruction::toString() const
+{
     std::stringstream ss;
     ss << "Amux: " << (amux == AMUX::A_LATCH ? "A Latch" : "MBR") << std::endl;
-    ss << "Cond: " << (cond == COND::JUMP ? "Always Jump" :
-                       cond == COND::NO_JUMP ? "No Jump" :
-                       cond == COND::N_JUMP ? "N Jump" : "Z Jump") << std::endl;
-    ss << "Alu: " << (alu == ALU::A_PLUS_B ? "+" :
-                      alu == ALU::A_AND_B ? "&" :
-                      alu == ALU::POS_A ? "Pos A" : "Neg A") << std::endl;
-    ss << "Sh: " << (sh == SH::NO_SHIFT ? "No Shift" :
-                     sh == SH::LEFT_SHIFT ? "Left Shift" :
-                     sh == SH::RIGHT_SHIFT ? "Right Shift" : "Invalid Shift") << std::endl;
+    ss << "Cond: " << (cond == COND::JUMP ? "Always Jump" : cond == COND::NO_JUMP ? "No Jump"
+                                                        : cond == COND::N_JUMP    ? "N Jump"
+                                                                                  : "Z Jump")
+       << std::endl;
+    ss << "Alu: " << (alu == ALU::A_PLUS_B ? "+" : alu == ALU::A_AND_B ? "&"
+                                               : alu == ALU::POS_A     ? "Pos A"
+                                                                       : "Neg A")
+       << std::endl;
+    ss << "Sh: " << (sh == SH::NO_SHIFT ? "No Shift" : sh == SH::LEFT_SHIFT ? "Left Shift"
+                                                   : sh == SH::RIGHT_SHIFT  ? "Right Shift"
+                                                                            : "Invalid Shift")
+       << std::endl;
     ss << "Mbr: " << (mbr == YES ? "Yes" : "No") << std::endl;
     ss << "Mar: " << (mar == YES ? "Yes" : "No") << std::endl;
     ss << "Rd: " << (rd == YES ? "Yes" : "No") << std::endl;
     ss << "Wr: " << (wr == YES ? "Yes" : "No") << std::endl;
     ss << "Enc: " << (enc == YES ? "Yes" : "No") << std::endl;
-    ss << "Bus C: " << "0x" << std::hex << (int) busC << std::endl;
-    ss << "Bus B: " << "0x" << std::hex << (int) busB << std::endl;
-    ss << "Bus A: " << "0x" << std::hex << (int) busA << std::endl;
-    ss << "Address: " << "0x" << std::hex << (int) address << std::endl;
+    ss << "Bus C: "
+       << "0x" << std::hex << (int)busC << std::endl;
+    ss << "Bus B: "
+       << "0x" << std::hex << (int)busB << std::endl;
+    ss << "Bus A: "
+       << "0x" << std::hex << (int)busA << std::endl;
+    ss << "Address: "
+       << "0x" << std::hex << (int)address << std::endl;
     return ss.str();
 }
 
-instruction::instruction(const instruction &other) {
+instruction::instruction(const instruction &other)
+{
     setCode(other.getCode());
     valid = other.isValid();
     ID = other.getId();
 }
 
-instruction::instruction(instruction &&other) noexcept {
+instruction::instruction(instruction &&other) noexcept
+{
     setCode(other.getCode());
     valid = other.isValid();
     ID = other.getId();
 }
 
-unsigned int instruction::getId() const {
+unsigned int instruction::getId() const
+{
     return ID;
 }
 
-void instruction::setId(unsigned int id) {
+void instruction::setId(unsigned int id)
+{
     ID = id;
 }
 
-instruction &instruction::operator=(const instruction &other) {
+instruction &instruction::operator=(const instruction &other)
+{
     setCode(other.getCode());
     valid = other.isValid();
     ID = other.getId();

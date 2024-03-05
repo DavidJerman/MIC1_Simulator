@@ -7,6 +7,8 @@
 #include "test_parser.h"
 #include "test_simulator.h"
 
+#include <iostream>
+
 void run_tests() {
     std::cout << "[0] Running tests..." << std::endl;
     std::cout << "[1] Parser: " << std::endl;

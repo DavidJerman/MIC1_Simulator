@@ -22,7 +22,6 @@ public:
 
     std::vector<instruction> parseProgram(std::istream& stream);
 
-private:
     static bool findCharAfterSpaces(const std::string &s, char c, int offset);
 
     static bool isNumber(const std::string &s);

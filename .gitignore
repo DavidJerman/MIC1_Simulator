@@ -4,3 +4,6 @@ build
 *.bin
 *.exe
 *.dll
+.vscode
+.vs
+.idea

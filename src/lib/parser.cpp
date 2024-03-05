@@ -7,11 +7,13 @@
 #include <cstring>
 #include "parser.h"
 
-parser::parser() {
+parser::parser()
+{
     initRegisterTable();
 }
 
-instruction parser::parseLine(const std::string &input) {
+instruction parser::parseLine(const std::string &input)
+{
     // Covert to an instruction
     // Bits for checking if the property of an instruction has already been set
     bool instructionMarker[13]{false};
@@ -40,14 +42,16 @@ instruction parser::parseLine(const std::string &input) {
 
     // TODO: MBR has to also set ALU
 
-    while (std::getline(lineStream, nextLine, ';')) {
+    while (std::getline(lineStream, nextLine, ';'))
+    {
         nextLine = trim(nextLine);
         if (nextLine[0] == '#')
             return instruction;
         // Case 2.
         instructionStream.clear();
         instructionStream.str(nextLine);
-        while (std::getline(instructionStream, token, ' ')) {
+        while (std::getline(instructionStream, token, ' '))
+        {
             token = trim(token);
             if (token.substr(0, 2) == "rd")
             {
@@ -103,7 +107,9 @@ instruction parser::parseLine(const std::string &input) {
                     std::cerr << "Error: goto must be followed by a number!" << std::endl;
                     instruction.invalidate();
                     break;
-                } else {
+                }
+                else
+                {
                     instruction.setAddress(std::stoi(token));
                 }
                 if (!instructionStream.eof())
@@ -313,13 +319,16 @@ instruction parser::parseLine(const std::string &input) {
     return instruction;
 }
 
-bool parser::findCharAfterSpaces(const std::string &s, char c, int offset) {
-    bool found {false};
-    for (; offset < s.length(); offset++) {
+bool parser::findCharAfterSpaces(const std::string &s, char c, int offset)
+{
+    bool found{false};
+    for (; offset < s.length(); offset++)
+    {
         auto chr = s[offset];
         if (chr == c && found)
             return false;
-        if (chr == c) {
+        if (chr == c)
+        {
             found = true;
             continue;
         }
@@ -329,19 +338,22 @@ bool parser::findCharAfterSpaces(const std::string &s, char c, int offset) {
     return found;
 }
 
-bool parser::isNumber(const std::string &s) {
+bool parser::isNumber(const std::string &s)
+{
     auto res = std::all_of(s.begin(), s.end(), isdigit);
     return res;
 }
 
-REGISTER parser::toRegister(const std::string &s) {
+REGISTER parser::toRegister(const std::string &s)
+{
     auto reg = registerTable.find(s);
     if (reg != registerTable.end())
         return (REGISTER)reg->second;
     return INVALID;
 }
 
-void parser::initRegisterTable() {
+void parser::initRegisterTable()
+{
     registerTable.insert({"pc", REGISTER::PC});
     registerTable.insert({"ac", REGISTER::AC});
     registerTable.insert({"sp", REGISTER::SP});
@@ -366,22 +378,9 @@ void parser::initRegisterTable() {
 
 bool parser::arithmetic(instruction &instruction, bool *instructionMarker, const std::string &expression)
 {
-    std::stringstream instructionStream {expression};
+    std::stringstream instructionStream{expression};
     std::string token;
     std::getline(instructionStream, token, ' ');
-
-//    if (instructionMarker[MARK::MALU])
-//    {
-//        std::cout << "Error: cannot call arithmetic again after arithmetic!" << std::endl;
-//        return false;
-//    }
-//    instructionMarker[MARK::MALU] = true;
-//    if (instructionMarker[MARK::MA] || instructionMarker[MARK::MB])
-//    {
-//        std::cout << "Error: cannot call arithmetic again!" << std::endl;
-//        return false;
-//    }
-//    instructionMarker[MARK::MA] = true;
 
     if (!strcmp(token.substr(0, 3).c_str(), "inv"))
     {
@@ -472,7 +471,8 @@ bool parser::arithmetic(instruction &instruction, bool *instructionMarker, const
     return true;
 }
 
-bool parser::arithmeticPlus(instruction &instruction, bool *instructionMarker, const std::string &expression) {
+bool parser::arithmeticPlus(instruction &instruction, bool *instructionMarker, const std::string &expression)
+{
     std::stringstream expressionStream(expression);
     std::string token;
     std::getline(expressionStream, token, ' ');
@@ -539,7 +539,8 @@ bool parser::arithmeticPlus(instruction &instruction, bool *instructionMarker, c
     return true;
 }
 
-bool parser::setA(instruction &instruction, bool *instructionMarker, const REGISTER &reg) {
+bool parser::setA(instruction &instruction, bool *instructionMarker, const REGISTER &reg)
+{
     if (instructionMarker[MARK::MA] && instruction.getBusA() != reg)
     {
         std::cerr << "Error: cannot call setA again with different register!" << std::endl;
@@ -550,7 +551,8 @@ bool parser::setA(instruction &instruction, bool *instructionMarker, const REGIS
     return true;
 }
 
-bool parser::setB(instruction &instruction, bool *instructionMarker, const REGISTER &reg) {
+bool parser::setB(instruction &instruction, bool *instructionMarker, const REGISTER &reg)
+{
     if (instructionMarker[MARK::MB] && instruction.getBusB() != reg)
     {
         std::cerr << "Error: cannot call setB again with different register!" << std::endl;
@@ -561,7 +563,8 @@ bool parser::setB(instruction &instruction, bool *instructionMarker, const REGIS
     return true;
 }
 
-std::vector<instruction> parser::parseFile(const std::string &path) {
+std::vector<instruction> parser::parseFile(const std::string &path)
+{
     std::ifstream stream;
     stream.open(path);
     if (!stream.is_open())
@@ -572,7 +575,8 @@ std::vector<instruction> parser::parseFile(const std::string &path) {
     return parseProgram(stream);
 }
 
-std::vector<instruction> parser::parseProgram(std::istream &stream) {
+std::vector<instruction> parser::parseProgram(std::istream &stream)
+{
     std::vector<instruction> instructions;
     std::string token;
     int lineCounter = 0;
@@ -598,7 +602,8 @@ std::vector<instruction> parser::parseProgram(std::istream &stream) {
         {
             instructions.push_back(instruction);
             instructionCounter++;
-        } else
+        }
+        else
         {
             std::cerr << "Error: invalid instruction in line " << lineCounter << "!" << std::endl;
             return {};

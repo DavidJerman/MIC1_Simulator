@@ -13,7 +13,7 @@ file(COPY programs/SUMOFN.MP DESTINATION ${CMAKE_BINARY_DIR})
 file(GLOB_RECURSE SRC "src/lib/*.cpp")
 file(GLOB_RECURSE INCLUDE "src/*.h")
 file(GLOB_RECURSE SRC_Test "tests/src/*.cpp")
-file(GLOB_RECURSE INCLUDE_Test "tests/src/*.h")
+file(GLOB_RECURSE INCLUDE_Test "tests/include/*.h")
 file(GLOB MAIN "src/main.cpp")
 
 source_group("Header files" FILES ${INCLUDE})
