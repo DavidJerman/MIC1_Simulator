@@ -1,7 +1,3 @@
-//
-// Created by pinkynyte on 1/25/23.
-//
-
 #include "shifter.h"
 
 void shifter::set(SH shift)

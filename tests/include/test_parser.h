@@ -8,7 +8,7 @@ namespace PARSE_TEST
     bool run();
 
     void invalid_instruction();
-    
+
     bool test_rd(parser &p);
 
     bool test_wr(parser &p);
@@ -57,5 +57,23 @@ namespace PARSE_TEST
 
     bool test_arithmetic_3(parser &p);
 
-    bool test_arithmetic_4(parser &p);
-}
+    bool test_arithmeticPlus_1(parser &p);
+
+    bool test_arithmeticPlus_2(parser &p);
+
+    bool test_arithmeticPlus_3(parser &p);
+
+    bool test_arithmeticPlus_4(parser &p);
+
+    bool test_setA_1(parser &p);
+
+    bool test_setA_2(parser &p);
+
+    bool test_setA_3(parser &p);
+
+    bool test_setB_1(parser &p);
+
+    bool test_setB_2(parser &p);
+
+    bool test_setB_3(parser &p);
+} // namespace PARSE_TEST

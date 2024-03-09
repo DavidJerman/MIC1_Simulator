@@ -33,7 +33,17 @@ namespace PARSE_TEST
                                       test_toRegister_4,
                                       test_arithmetic_1,
                                       test_arithmetic_2,
-                                      test_arithmetic_3};
+                                      test_arithmetic_3,
+                                      test_arithmeticPlus_1,
+                                      test_arithmeticPlus_2,
+                                      test_arithmeticPlus_3,
+                                      test_arithmeticPlus_4,
+                                      test_setA_1,
+                                      test_setA_2,
+                                      test_setA_3,
+                                      test_setB_1,
+                                      test_setB_2,
+                                      test_setB_3};
 
         // Run tests
         for (const auto &test : tests)
@@ -578,7 +588,7 @@ namespace PARSE_TEST
 
     bool test_isNumber_4(parser &p)
     {
-        std::cout << "  <T> isNumber 3: ";
+        std::cout << "  <T> isNumber 4: ";
 
         std::string input = "c12";
 
@@ -645,7 +655,7 @@ namespace PARSE_TEST
         else
             return false;
     }
-    
+
     bool test_arithmetic_1(parser &p)
     {
         std::cout << "  <T> Arithmetic 1: ";
@@ -662,7 +672,7 @@ namespace PARSE_TEST
         else
             return false;
     }
-    
+
     bool test_arithmetic_2(parser &p)
     {
         std::cout << "  <T> Arithmetic 2: ";
@@ -679,7 +689,7 @@ namespace PARSE_TEST
         else
             return false;
     }
-    
+
     bool test_arithmetic_3(parser &p)
     {
         std::cout << "  <T> Arithmetic 3: ";
@@ -691,12 +701,183 @@ namespace PARSE_TEST
 
         auto result = p.arithmetic(inst, &instMarker, input);
 
-        // Print the results
-        std::cout << "Result: " << inst.getAlu() << std::endl;
-
-        if (inst.getAlu() == ALU::NEG_A)
+        if (inst.getAlu() == 259)
             return true;
         else
             return false;
+    }
+
+    bool test_arithmeticPlus_1(parser &p)
+    {
+        std::cout << "  <T> ArithmeticPlus 1: ";
+
+        std::string input = "a";
+
+        instruction inst;
+        bool instMarker;
+
+        auto result = p.arithmeticPlus(inst, &instMarker, input);
+
+        if (inst.getAlu() == ALU::POS_A)
+            return true;
+        else
+            return false;
+    }
+
+    bool test_arithmeticPlus_2(parser &p)
+    {
+        std::cout << "  <T> ArithmeticPlus 2: ";
+
+        std::string input = "mar;";
+
+        instruction inst;
+        bool instMarker;
+
+        auto result = p.arithmeticPlus(inst, &instMarker, input);
+
+        if (!result)
+            return true;
+        else
+            return false;
+
+        return true;
+    }
+
+    bool test_arithmeticPlus_3(parser &p)
+    {
+        std::cout << "  <T> ArithmeticPlus 3: ";
+
+        std::string input = "a + b;";
+
+        instruction inst;
+        bool instMarker;
+
+        auto result = p.arithmeticPlus(inst, &instMarker, input);
+
+        if (inst.getAlu() == ALU::A_PLUS_B)
+            return true;
+        else
+            return false;
+
+        return true;
+    }
+
+    bool test_arithmeticPlus_4(parser &p)
+    {
+        std::cout << "  <T> ArithmeticPlus 4: ";
+
+        std::string input = "a + b; c;";
+
+        instruction inst;
+        bool instMarker;
+
+        auto result = p.arithmeticPlus(inst, &instMarker, input);
+
+        if (!result)
+            return true;
+        else
+            return false;
+
+        return true;
+    }
+
+    bool test_setA_1(parser &p)
+    {
+        std::cout << "  <T> SetA 1: ";
+
+        instruction inst;
+        bool instMarker[13]{false};
+        REGISTER reg = REGISTER::A;
+
+        auto result = p.setA(inst, instMarker, reg);
+
+        if (inst.getBusA() == REGISTER::A && instMarker[MARK::MA] == true)
+            return true;
+        else
+            return false;
+    }
+
+    bool test_setA_2(parser &p)
+    {
+        std::cout << "  <T> SetA 2: ";
+
+        instruction inst;
+        bool instMarker[13]{false};
+        REGISTER reg = REGISTER::B;
+
+        auto result = p.setA(inst, instMarker, reg);
+
+        if (inst.getBusA() == REGISTER::B && instMarker[MARK::MA] == true)
+            return true;
+        else
+            return false;
+    }
+
+    bool test_setA_3(parser &p)
+    {
+        std::cout << "  <T> SetA 3: ";
+
+        instruction inst;
+        bool instMarker[13]{false};
+        instMarker[MARK::MA] = true;
+        REGISTER reg = REGISTER::C;
+
+        auto result = p.setA(inst, instMarker, reg);
+
+        if (!result)
+            return true;
+        else
+            return false;
+    }
+
+    bool test_setB_1(parser &p)
+    {
+        std::cout << "  <T> SetB 1: ";
+
+        instruction inst;
+        bool instMarker[13]{false};
+        REGISTER reg = REGISTER::A;
+
+        auto result = p.setB(inst, instMarker, reg);
+
+        if (inst.getBusB() == REGISTER::A && instMarker[MARK::MB] == true)
+            return true;
+        else
+            return false;
+    }
+
+    bool test_setB_2(parser &p)
+    {
+        std::cout << "  <T> SetB 2: ";
+
+        instruction inst;
+        bool instMarker[13]{false};
+        REGISTER reg = REGISTER::B;
+
+        auto result = p.setB(inst, instMarker, reg);
+
+        if (inst.getBusB() == REGISTER::B && instMarker[MARK::MB] == true)
+            return true;
+        else
+            return false;
+    }
+
+    bool test_setB_3(parser &p)
+    {
+        std::cout << "  <T> SetB 3: ";
+
+        instruction inst;
+        bool instMarker[13]{false};
+        instMarker[MARK::MB] = true;
+        REGISTER reg = REGISTER::C;
+
+        auto result = p.setB(inst, instMarker, reg);
+
+        if (!result)
+            return true;
+        else
+            return false;
+
+        return false;
     }
 }
